@@ -17,6 +17,7 @@ class BitcoinExchange
 
 		static void splitLine(std::string line);
 		static void checkDate(std::string date);
+		static int getCurrentYear(void);
 
 		static std::map<size_t, float> _db;
 };
