@@ -59,17 +59,27 @@ void BitcoinExchange::splitLine(std::string line)
 	//std::cout << dateString << std::endl;
 
 	checkDate(dateString);
+	checkValueString(valueString);
 
-	//convert value string to float
+	//convert value string to float and check for overflow
 	float value;
 	std::istringstream(valueString) >> value;
+	std::ostringstream oss;
+	oss << value;
+
+	// std::cout << oss.str() << "--" << valueString << std::endl;
+
+	// if (valueString != oss.str())
+	// 	throw std::runtime_error("Database value overflows.");
+
+	//check for overflow by comparing to infinity
+
 
 	//remove '-' and convert date to int 
 	dateString.erase(std::remove(dateString.begin(), dateString.end(), '-'), dateString.end());
 	size_t date;
 	std::istringstream(dateString) >> date;
 
-	//std::cout << "date " << date << "----" << "value " << value << std::endl;
 	
 	_db[date] = value;
 }
@@ -115,6 +125,41 @@ void BitcoinExchange::checkDate(std::string date)
         if (day > 29 || (!isLeapYear && day > 28))
 			throw std::runtime_error("Date is invalid.");
     }
+}
+
+void BitcoinExchange::checkValue(float value)
+{
+	std::cout << value << std::endl;
+	if (value < 0)
+		throw std::runtime_error("Value is negative.");
+	if (value > 1000)
+		throw std::runtime_error("Value is to big.");
+}
+
+void BitcoinExchange::checkValue(int value)
+{
+	if (value < 0)
+		throw std::runtime_error("Value is negative.");
+	if (value > 1000)
+		throw std::runtime_error("Value is to big.");
+}
+
+void BitcoinExchange::checkValueString(std::string valueString)
+{
+	// if (valueString.size() > 10)
+	// 	throw std::runtime_error("Value is to big.");
+	for (size_t i = 0; i < valueString.size(); i++)
+	{
+		if (!isdigit(valueString[i]) && valueString[i] != '.')
+			throw std::runtime_error("Value is not only digits.");
+	}
+}
+
+int BitcoinExchange::getCurrentYear()
+{
+    std::time_t t = std::time(NULL);
+    std::tm* localTime = std::localtime(&t);
+    return localTime->tm_year + 1900;
 }
 
 

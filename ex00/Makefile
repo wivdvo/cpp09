@@ -1,8 +1,7 @@
 NAME =		btc
 
 SRCS =		main.cpp\
-			BitcoinExchange.cpp\
-			BitcoinExchangeUtils.cpp
+			BitcoinExchange.cpp
 
 HEADERS =	BitcoinExchange.hpp
 
