@@ -6,7 +6,6 @@
 class BitcoinExchange
 {
 	public:
-
 		static void doExchange(char* fileString);
 
 	private:
