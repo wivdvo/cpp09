@@ -21,9 +21,10 @@ class BitcoinExchange
 		static void checkValue(float value);
 		static void checkValue(int value);
 		static void checkValueString(std::string value);
-		static void checkAndReadData(void);
-		static void checkAndReadInput(char* fileString);
+		static void handleData(void);
+		static void handleInputAndConvert(char* fileString);
 		static void splitLineInput(std::string line);
+		static float getRate(size_t date);
 
 		static std::map<size_t, float> _db;
 };

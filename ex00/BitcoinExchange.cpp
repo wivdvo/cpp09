@@ -34,11 +34,11 @@ void BitcoinExchange::doExchange(char* fileString)
 {
 	(void)fileString;
 
-	checkAndReadData();
-	checkAndReadInput(fileString);
+	handleData();
+	handleInputAndConvert(fileString);
 }
 
-void BitcoinExchange::checkAndReadInput(char* filestring)
+void BitcoinExchange::handleInputAndConvert(char* filestring)
 {
 	std::ifstream input(filestring);
 	if (!input)
@@ -68,13 +68,15 @@ void BitcoinExchange::splitLineInput(std::string line)
 	try {
 		checkDate(dateString);
 	} catch (std::exception& e){
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Error: "<< e.what() << std::endl;
+		return;
 	}
 
 	try {
 		checkValueString(valueString);
 	} catch (std::exception& e){
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Error: "<< e.what() << std::endl;
+		return;
 	}
 
 	//convert value string to float
@@ -87,11 +89,40 @@ void BitcoinExchange::splitLineInput(std::string line)
 			throw std::runtime_error("Value overflowed.");
 		checkValue(value);
 	} catch(std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		std::cerr << "Error: "<< e.what() << std::endl;
+		return;
+	}
+
+	//remove '-' and convert date to int 
+	std::string cleanDateString = dateString;
+	cleanDateString.erase(std::remove(cleanDateString.begin(), cleanDateString.end(), '-'), cleanDateString.end());
+	size_t date;
+	std::istringstream(cleanDateString) >> date;
+
+	float rate = getRate(date);
+	//std::cout << rate << std::endl;
+
+	std::cout << dateString << " => " << value << " = " << value * rate << std::endl; 
+}
+
+float BitcoinExchange::getRate(size_t date)
+{
+	if (_db.find(date) != _db.end())
+		return _db[date];
+	else
+	{
+		std::map<size_t, float>::iterator it = _db.lower_bound(date);
+		if (it != _db.begin())
+		{
+			--it;
+			return it->second;
+		}
+		else
+			return it->second;
 	}
 }
 
-void BitcoinExchange::checkAndReadData()
+void BitcoinExchange::handleData()
 {
 	std::ifstream data("data.csv");
 	if (!data)
