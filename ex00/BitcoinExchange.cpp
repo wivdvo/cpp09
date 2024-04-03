@@ -2,6 +2,7 @@
 
 #include <cctype>
 #include <cstddef>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -9,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <stdexcept>
+#include <limits>
 
 BitcoinExchange::BitcoinExchange() {}
 
@@ -32,9 +34,74 @@ void BitcoinExchange::doExchange(char* fileString)
 {
 	(void)fileString;
 
+	checkAndReadData();
+	checkAndReadInput(fileString);
+}
+
+void BitcoinExchange::checkAndReadInput(char* filestring)
+{
+	std::ifstream input(filestring);
+	if (!input)
+		throw std::runtime_error("Could not open file.");
+
+	std::string line;
+	int i = 0;
+	while (std::getline(input, line))
+	{
+		if (i++ != 0)
+			splitLineInput(line);
+	}
+}
+
+void BitcoinExchange::splitLineInput(std::string line)
+{
+	//remove all spaces in line
+	line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
+	
+	//seperate line into to parts seperatored by '|'
+	std::istringstream ss(line);
+	std::string dateString;
+	std::string valueString;
+	std::getline(ss, dateString, '|');
+	std::getline(ss, valueString);
+
+	//std::cout << line << std::endl;
+
+
+	//std::cout << dateString << "--" << valueString << std::endl;
+
+	try{
+		checkDate(dateString);
+	}catch (std::exception& e){
+		std::cerr << e.what() << std::endl;
+	}
+
+	try{
+		checkValueString(valueString);
+	}catch (std::exception& e){
+		std::cerr << e.what() << std::endl;
+	}
+
+	//convert value string to float
+	float value;
+	std::istringstream(valueString) >> value;
+
+	//check for overflow by comparing to infinity
+	if (value == std::numeric_limits<float>::infinity() 
+		|| value == -std::numeric_limits<float>::infinity())
+		throw std::runtime_error("Value overflowed.");
+	try{
+		checkValue(value);
+	} catch(std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
+}
+
+void BitcoinExchange::checkAndReadData()
+{
 	std::ifstream data("data.csv");
 	if (!data)
-		throw std::runtime_error("Could not open file");
+		throw std::runtime_error("Could not open file.");
 	
 
 	std::string line;
@@ -42,11 +109,11 @@ void BitcoinExchange::doExchange(char* fileString)
 	while (std::getline(data, line))
 	{
 		if (i++ != 0)
-			splitLine(line);
+			splitLineData(line);
 	}
 }
 
-void BitcoinExchange::splitLine(std::string line)
+void BitcoinExchange::splitLineData(std::string line)
 {
 	std::istringstream ss(line);
 	std::string dateString;
@@ -57,22 +124,19 @@ void BitcoinExchange::splitLine(std::string line)
 	std::getline(ss, valueString);
 
 	//std::cout << dateString << std::endl;
-
+	
 	checkDate(dateString);
 	checkValueString(valueString);
+	
 
-	//convert value string to float and check for overflow
+	//convert value string to float
 	float value;
 	std::istringstream(valueString) >> value;
-	std::ostringstream oss;
-	oss << value;
-
-	// std::cout << oss.str() << "--" << valueString << std::endl;
-
-	// if (valueString != oss.str())
-	// 	throw std::runtime_error("Database value overflows.");
 
 	//check for overflow by comparing to infinity
+	if (value == std::numeric_limits<float>::infinity() 
+		|| value == -std::numeric_limits<float>::infinity())
+		throw std::runtime_error("Value overflowed.");
 
 
 	//remove '-' and convert date to int 
@@ -80,7 +144,7 @@ void BitcoinExchange::splitLine(std::string line)
 	size_t date;
 	std::istringstream(dateString) >> date;
 
-	
+	//add to database
 	_db[date] = value;
 }
 
@@ -129,7 +193,6 @@ void BitcoinExchange::checkDate(std::string date)
 
 void BitcoinExchange::checkValue(float value)
 {
-	std::cout << value << std::endl;
 	if (value < 0)
 		throw std::runtime_error("Value is negative.");
 	if (value > 1000)
@@ -146,10 +209,10 @@ void BitcoinExchange::checkValue(int value)
 
 void BitcoinExchange::checkValueString(std::string valueString)
 {
-	// if (valueString.size() > 10)
-	// 	throw std::runtime_error("Value is to big.");
 	for (size_t i = 0; i < valueString.size(); i++)
 	{
+		if (i == 0 && valueString[i] == '-')
+			continue;
 		if (!isdigit(valueString[i]) && valueString[i] != '.')
 			throw std::runtime_error("Value is not only digits.");
 	}

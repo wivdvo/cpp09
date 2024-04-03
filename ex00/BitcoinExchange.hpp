@@ -15,12 +15,15 @@ class BitcoinExchange
 		BitcoinExchange& operator=(const BitcoinExchange& other);
 		~BitcoinExchange();
 
-		static void splitLine(std::string line);
+		static void splitLineData(std::string line);
 		static void checkDate(std::string date);
 		static int getCurrentYear(void);
 		static void checkValue(float value);
 		static void checkValue(int value);
 		static void checkValueString(std::string value);
+		static void checkAndReadData(void);
+		static void checkAndReadInput(char* fileString);
+		static void splitLineInput(std::string line);
 
 		static std::map<size_t, float> _db;
 };

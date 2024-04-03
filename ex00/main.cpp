@@ -6,19 +6,15 @@
 
 int main(int argc, char** argv)
 {
-	try
-	{
+	try {
 		if (argc != 2)
 		{
-
-			BitcoinExchange::doExchange(NULL);
-
-			//throw std::runtime_error("Need one file as argument!");
+			throw std::runtime_error("Need one file as argument!");
 		}
 		BitcoinExchange::doExchange(argv[1]);
+	} catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		return 1;
 	}
-	catch (std::exception& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+	return 0;
 }
