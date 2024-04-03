@@ -65,20 +65,15 @@ void BitcoinExchange::splitLineInput(std::string line)
 	std::getline(ss, dateString, '|');
 	std::getline(ss, valueString);
 
-	//std::cout << line << std::endl;
-
-
-	//std::cout << dateString << "--" << valueString << std::endl;
-
-	try{
+	try {
 		checkDate(dateString);
-	}catch (std::exception& e){
+	} catch (std::exception& e){
 		std::cerr << e.what() << std::endl;
 	}
 
-	try{
+	try {
 		checkValueString(valueString);
-	}catch (std::exception& e){
+	} catch (std::exception& e){
 		std::cerr << e.what() << std::endl;
 	}
 
@@ -87,10 +82,9 @@ void BitcoinExchange::splitLineInput(std::string line)
 	std::istringstream(valueString) >> value;
 
 	//check for overflow by comparing to infinity
-	if (value == std::numeric_limits<float>::infinity() 
-		|| value == -std::numeric_limits<float>::infinity())
-		throw std::runtime_error("Value overflowed.");
-	try{
+	try {
+		if (value == std::numeric_limits<float>::infinity() || value == -std::numeric_limits<float>::infinity())
+			throw std::runtime_error("Value overflowed.");
 		checkValue(value);
 	} catch(std::exception& e) {
 		std::cerr << e.what() << std::endl;
