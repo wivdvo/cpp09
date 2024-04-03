@@ -51,6 +51,8 @@ void BitcoinExchange::handleInputAndConvert(char* filestring)
 		if (i++ != 0)
 			splitLineInput(line);
 	}
+	if (i < 2)
+		throw std::runtime_error("Input has no info. (needs to be: YYYY-MM-DD | btcValue)");
 }
 
 void BitcoinExchange::splitLineInput(std::string line)
@@ -64,6 +66,17 @@ void BitcoinExchange::splitLineInput(std::string line)
 	std::string valueString;
 	std::getline(ss, dateString, '|');
 	std::getline(ss, valueString);
+
+	if (dateString == "")
+	{
+		std::cerr << "Error: Date is empty string. (needs to be: YYYY-MM-DD | btcValue)" << std::endl;
+		return;
+	}
+	if (valueString == "")
+	{
+		std::cerr << "Error: Value is empty string. (needs to be: YYYY-MM-DD | btcValue)" << std::endl;
+		return;
+	}
 
 	try {
 		checkDate(dateString);
@@ -100,7 +113,6 @@ void BitcoinExchange::splitLineInput(std::string line)
 	std::istringstream(cleanDateString) >> date;
 
 	float rate = getRate(date);
-	//std::cout << rate << std::endl;
 
 	std::cout << dateString << " => " << value << " = " << value * rate << std::endl; 
 }
@@ -136,6 +148,8 @@ void BitcoinExchange::handleData()
 		if (i++ != 0)
 			splitLineData(line);
 	}
+	if (i < 2)
+		throw std::runtime_error("Database has no info. (needs to be: YYYY-MM-DD,value)");
 }
 
 void BitcoinExchange::splitLineData(std::string line)
@@ -148,7 +162,11 @@ void BitcoinExchange::splitLineData(std::string line)
 	std::getline(ss, dateString, ',');
 	std::getline(ss, valueString);
 
-	//std::cout << dateString << std::endl;
+	if (dateString == "")
+		throw std::runtime_error("Date is empty string. (needs to be: YYYY-MM-DD,value)");
+	if (valueString == "")
+		throw std::runtime_error("Value is empty string. (needs to be: YYYY-MM-DD,value)");
+
 	
 	checkDate(dateString);
 	checkValueString(valueString);
