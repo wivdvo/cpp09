@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 			throw std::runtime_error("Invalid argument");
 		RPN::doRPN(argv[1]);
 	} catch (std::exception& e) {
-		std::cerr << "Error: " << e.what() << std::endl;
+		std::cout << "Error: " << e.what() << std::endl;
 		return 1;
 	}
 	return 0;

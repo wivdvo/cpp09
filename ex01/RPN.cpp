@@ -1,6 +1,5 @@
 #include "RPN.hpp"
 #include <cctype>
-#include <cfloat>
 #include <cstddef>
 #include <stdexcept>
 #include <algorithm>
