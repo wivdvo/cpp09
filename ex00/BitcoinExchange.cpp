@@ -60,8 +60,14 @@ void BitcoinExchange::handleInputAndConvert(char* filestring)
 	int i = 0;
 	while (std::getline(input, line))
 	{
-		if (i++ != 0)
+		if (i != 0)
 			splitLineInput(line);
+		else if (i == 0)
+		{
+			if (line != "date | value")
+				throw std::runtime_error("Header of input invalid. (needs to be: date | value)");
+		}
+		i++;
 	}
 	if (i < 2)
 		throw std::runtime_error("Input has no info. (needs to be: YYYY-MM-DD | btcValue)");
@@ -157,8 +163,14 @@ void BitcoinExchange::handleData()
 	int i = 0;
 	while (std::getline(data, line))
 	{
-		if (i++ != 0)
+		if (i != 0)
 			splitLineData(line);
+		else if (i == 0)
+		{
+			if (line != "date,exchange_rate")
+				throw std::runtime_error ("Header of data is invalid. (needs to be: date,exchange_rate");
+		}
+		i++;
 	}
 	if (i < 2)
 		throw std::runtime_error("Database has no info. (needs to be: YYYY-MM-DD,value)");
