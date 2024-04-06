@@ -71,7 +71,7 @@ void BitcoinExchange::splitLineInput(std::string line)
 {
 	//remove all spaces in line
 	line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
-	
+
 	//seperate line into to parts seperatored by '|'
 	std::istringstream ss(line);
 	std::string dateString;
@@ -118,7 +118,7 @@ void BitcoinExchange::splitLineInput(std::string line)
 		return;
 	}
 
-	//remove '-' and convert date to int 
+	//remove '-' and convert date to int
 	std::string cleanDateString = dateString;
 	cleanDateString.erase(std::remove(cleanDateString.begin(), cleanDateString.end(), '-'), cleanDateString.end());
 	size_t date;
@@ -126,7 +126,7 @@ void BitcoinExchange::splitLineInput(std::string line)
 
 	float rate = getRate(date);
 
-	std::cout << dateString << " => " << value << " = " << value * rate << std::endl; 
+	std::cout << dateString << " => " << value << " = " << value * rate << std::endl;
 }
 
 float BitcoinExchange::getRate(size_t date)
@@ -151,7 +151,7 @@ void BitcoinExchange::handleData()
 	std::ifstream data("data.csv");
 	if (!data)
 		throw std::runtime_error("Could not open file.");
-	
+
 
 	std::string line;
 	int i = 0;
@@ -179,22 +179,25 @@ void BitcoinExchange::splitLineData(std::string line)
 	if (valueString == "")
 		throw std::runtime_error("Value is empty string. (needs to be: YYYY-MM-DD,value)");
 
-	
+
 	checkDate(dateString);
 	checkValueString(valueString);
-	
+
 
 	//convert value string to float
 	float value;
 	std::istringstream(valueString) >> value;
 
 	//check for overflow by comparing to infinity
-	if (value == std::numeric_limits<float>::infinity() 
+	if (value == std::numeric_limits<float>::infinity()
 		|| value == -std::numeric_limits<float>::infinity())
 		throw std::runtime_error("Value overflowed.");
 
+	if (value < 0)
+		throw std::runtime_error("Negative value");
 
-	//remove '-' and convert date to int 
+
+	//remove '-' and convert date to int
 	dateString.erase(std::remove(dateString.begin(), dateString.end(), '-'), dateString.end());
 	size_t date;
 	std::istringstream(dateString) >> date;
@@ -279,5 +282,3 @@ int BitcoinExchange::getCurrentYear()
     std::tm* localTime = std::localtime(&t);
     return localTime->tm_year + 1900;
 }
-
-
