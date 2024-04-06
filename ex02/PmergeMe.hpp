@@ -10,3 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <vector>
+#include <deque>
+
+class PmergeMe
+{
+	public:
+		static void doMerge();
+
+	private:
+		PmergeMe(void);
+		PmergeMe(const PmergeMe& other);
+		PmergeMe& operator=(const PmergeMe& other);
+		~PmergeMe();
+
+
+		std::vector<int> _vec;
+		std::deque<int> _que;
+
+};

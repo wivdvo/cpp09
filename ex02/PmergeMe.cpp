@@ -10,3 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "PmergeMe.hpp"
+
+PmergeMe::PmergeMe() {}
+
+PmergeMe::PmergeMe(const PmergeMe& other)
+{
+	*this = other;
+}
+
+PmergeMe& PmergeMe::operator=(const PmergeMe& other)
+{
+	this->_vec = other._vec;
+	this->_que = other._que;
+
+	return *this;
+}
+
+PmergeMe::~PmergeMe() {}
