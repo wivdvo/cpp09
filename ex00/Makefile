@@ -1,3 +1,8 @@
+GREEN =		\033[0;32m
+RED =		\033[0;31m
+YELLOW =	\033[0;33m
+RESET =		\033[0m
+
 NAME =		btc
 
 SRCS =		main.cpp\
@@ -18,7 +23,7 @@ all: $(NAME)
 
 $(NAME):		$(OBJS) $(HEADERS)
 					@$(CXX) $(OBJS) $(CXXFLAGS) -o $(NAME)
-					@echo "\033[0;32mCompilation successful. \033[0;37m Executable name: ./$(NAME)\033[0m"
+					@echo "$(GREEN)Compilation successful.$(RESET) Executable name: ./$(NAME)"
 
 $(OBJDIR)/%.o:	%.cpp $(HEADERS)
 					@mkdir -p $(OBJDIR)
