@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:30 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/12 10:41:16 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/12 12:00:26 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,14 @@ std::vector<int> PmergeMe::splitVec(std::vector<int> vec)
 	
 	//basecase when two elements are left
 	std::vector<int> ret;
-	if (vec.size() == 2)
+	if (vec.size() <= 2)
 	{
-		if (vec[0] < vec[1])
+		if (vec.size() == 1)
+		{
+			ret.push_back(vec[0]);	
+		}
+		
+		else if (vec[0] < vec[1])
 		{
 			ret.push_back(vec[0]);
 			ret.push_back(vec[1]);
@@ -126,14 +131,14 @@ std::vector<int> PmergeMe::splitVec(std::vector<int> vec)
 			}
 			else 
 			{
-				b.push_back(vec[i+1]);
-				a.push_back(vec[i]);            
+				a.push_back(vec[i]);
+				b.push_back(vec[i+1]);            
 			}
 		}
 		else
 		{
 			a.push_back(vec[i]);
-    	}
+		}
 	}
 	
 	//split recursivly
