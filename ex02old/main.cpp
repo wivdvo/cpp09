@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:28 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/17 18:05:43 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/12 10:36:19 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ int main(int ac, char** av)
 
 	} catch (std::exception& e) {
 		std::cout << "Error: " << e.what() << std::endl;
-		return 1;
 	}
-	
-	return 0;
+
 }
