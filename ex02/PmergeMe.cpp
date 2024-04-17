@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:30 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/12 12:00:26 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:02:51 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ void PmergeMe::doMerge(int ac, char** av)
 	}
 
 	sortVec();
+	// std::cout << "Final ans" << std::endl;
+	// printVec(_vec);
 	//sortQue();
 }
 
@@ -89,21 +91,24 @@ int PmergeMe::checkNb(std::string nbString)
 
 void PmergeMe::sortVec(void)
 {
+	std::cout << "Final ans" << std::endl;
 	printVec(splitVec(_vec));
 }
 
 std::vector<int> PmergeMe::splitVec(std::vector<int> vec)
 {
 	
-	//basecase when two elements are left
-	std::vector<int> ret;
+	// std::cout << "Vec input" << std::endl;
+	// printVec(vec);
+
 	if (vec.size() <= 2)
 	{
+		// std::cout << "Less or eq than two" << std::endl;
+		std::vector<int> ret;
 		if (vec.size() == 1)
 		{
 			ret.push_back(vec[0]);	
-		}
-		
+		}	
 		else if (vec[0] < vec[1])
 		{
 			ret.push_back(vec[0]);
@@ -114,30 +119,34 @@ std::vector<int> PmergeMe::splitVec(std::vector<int> vec)
 			ret.push_back(vec[1]);
 			ret.push_back(vec[0]);
 		}
+		// std::cout << "ret from hardcode part" << std::endl;
+		// printVec(ret);
 		return ret;
 	}
 	
-	//split vec int two where a holds the bigger number of each pair([0][1])
+	int temp;
+	bool hadOdd = false;
+	if (vec.size() % 2 == 1)
+	{
+		temp = vec[vec.size() - 1];
+		vec.pop_back();
+		hadOdd = true;
+	}
+	
 	std::vector<int> a;
 	std::vector<int> b;
-	for (size_t i = 0; i < vec.size() - 2; i += 2)
+
+	for (size_t i = 0; i < vec.size() - 1; i += 2)
 	{
-		if (i + 1 < vec.size())
+		if (vec[i] < vec[i+1])
 		{
-			if (vec[i] < vec[i+1])
-			{
-				a.push_back(vec[i+1]);
-				b.push_back(vec[i]);
-			}
-			else 
-			{
-				a.push_back(vec[i]);
-				b.push_back(vec[i+1]);            
-			}
+			a.push_back(vec[i+1]);
+			b.push_back(vec[i]);
 		}
-		else
+		else 
 		{
 			a.push_back(vec[i]);
+			b.push_back(vec[i+1]);            
 		}
 	}
 	
@@ -148,45 +157,40 @@ std::vector<int> PmergeMe::splitVec(std::vector<int> vec)
 	//do insertion	
 	//b1 goes in front of a1
 	a.insert(a.begin(), b[0]);
-	int elementsAdded = 1;
+	b.erase(b.begin());
 
 	//get next jacobs nb to know which element to insert
 		//size_t JacNb = nextJacobs(nJacobs);
+	nJacobs = 0;
+	lastJacobs = 1;
 	size_t JacNb = _jacobsNb[nJacobs];
 
-	std::cout << "JacNB: " << JacNb << " nJacobs: " << nJacobs << std::endl;
-
-
-	int elementsToInsert = JacNb - lastJacobs;
+	int elementsToInsert = std::min(b.size(), JacNb - lastJacobs);
 	std::vector<int>::iterator it;
 	
-	for (int i = 0 ;elementsToInsert > 0; i++, elementsToInsert--)
+	// std::cout << "El to insert " << elementsToInsert << std::endl;
+	for (int i = 0; elementsToInsert >= 0; i++, elementsToInsert--)
 	{
-		std::cout << "nJacobs: " <<nJacobs << " JacNb: "<< JacNb <<" i: " << i + 1 << std::endl;
 		if (JacNb - (1 + i) < b.size())
 		{
-		
-		
-			std::cout << JacNb - (1 + i) << std::endl;
-			std::cout << i << "\n\n\n";
-			
 			it = std::upper_bound(a.begin(), a.end(), b[JacNb - (1 + i)]);
-			if (it != a.end())
-			{
-				a.insert(it, b[JacNb - (1 + i)]);
-				elementsAdded++;
-			}
-			else
-			{
-				a.push_back(b[JacNb - (1 + i)]);
-				elementsAdded++;
-       		}
+			a.insert(it, b[JacNb - (1 + i)]);
+			b.erase(b.begin() + JacNb - (1 + i));
 		}
+	}
+	
+	if (hadOdd)
+	{
+		// std::cout << " I AM HERE ||||||||" << std::endl;
+		it = std::upper_bound(a.begin(), a.end(), temp);
+		a.insert(it, temp);
 	}
 
 	lastJacobs = JacNb;
 	nJacobs++;
 
+	// std::cout << "vec return" << std::endl;
+	// printVec(a);
 	return a;
 }
 
