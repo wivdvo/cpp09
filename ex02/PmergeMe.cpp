@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 17:23:36 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:38:43 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ size_t PmergeMe::_jacobsNb[] = {
     91625968981, 183251937963
 };
 
-size_t PmergeMe::biggestJacUsed = 0;
-
 int PmergeMe::checkNb(std::string nbString)
 {
 	//check each number
@@ -75,7 +73,7 @@ int PmergeMe::checkNb(std::string nbString)
 
 void PmergeMe::printBefore(std::vector<int> vec)
 {
-	std::cout << "Before: ";
+	std::cout << std::endl << "Before:  ";
 
 	if (vec.size() <= 5)
 	{
@@ -95,10 +93,10 @@ void PmergeMe::printBefore(std::vector<int> vec)
 	}
 }
 
-void PmergeMe::printAfter(std::vector<int> vec)
+void PmergeMe::printAfter(std::vector<int> vec, std::deque<int> que)
 {
-	std::cout << "After:  ";
-
+	std::cout << std::endl << "After: " << std::endl;
+	std::cout << "Vector:  ";
 	if (vec.size() <= 5)
 	{
 		for (size_t i = 0; i < vec.size(); i++)
@@ -112,6 +110,24 @@ void PmergeMe::printAfter(std::vector<int> vec)
 		for (size_t i = 0; i < 4; i++)
 		{
 			std::cout << vec[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
+
+	std::cout << "Deque:   ";
+	if (que.size() <= 5)
+	{
+		for (size_t i = 0; i < que.size(); i++)
+		{
+			std::cout << que[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << que[i] << " ";
 		}
 		std::cout << "[...]" << std::endl;
 	}
@@ -127,8 +143,7 @@ void PmergeMe::doMerge(int ac, char** av)
 		temp = checkNb(av[i]);
 		_vec.push_back(temp);
 	}
-
-	//start sorting the vector
+	//sorting the vector
 	std::vector<int> resVec;
 	resVec = sortVec(_vec);
 	clock_t end = clock();
@@ -137,14 +152,12 @@ void PmergeMe::doMerge(int ac, char** av)
 	
 	//fill deque
 	start = clock();
-	start = clock();
 	for (int i = 1; i < ac; i++)
 	{
 		temp = checkNb(av[i]);
 		_que.push_back(temp);
 	}
-	
-	//start sotring the deque
+	//sotring the deque
 	std::deque<int> resQue;
 	resQue = sortQue(_que);
 	end = clock();
@@ -152,21 +165,12 @@ void PmergeMe::doMerge(int ac, char** av)
 
 	
 	printBefore(_vec);
-	printAfter(resVec);
-
+	printAfter(resVec, resQue);
 	std::cout << std::endl;
-	
 	printTimes(vecTime, queTime, _vec.size());
-
 	std::cout << std::endl;
-
-	// std::cout << std::endl << "Final vec: " << std::endl;
-	// printVecDebug(resVec);
-	checkVecDebug(resVec);
-
-	// std::cout << std::endl << "Final que: " << std::endl;
-	// printQueDebug(resQue);
-	checkQueDebug(resQue);
+	checkVec(resVec);
+	checkQue(resQue);
 }
 
 void PmergeMe::printTimes(double vecTime, double queTime, int n)
@@ -176,7 +180,7 @@ void PmergeMe::printTimes(double vecTime, double queTime, int n)
 	std::cout << "Time to processe a range of " << n <<  " elements with std::deque<int>: " << queTime  << " ms" << std::endl;
 }
 
-void PmergeMe::checkVecDebug(std::vector<int> res)
+void PmergeMe::checkVec(std::vector<int> res)
 {
 	if (res.size() != _vec.size())
 	{
@@ -196,7 +200,7 @@ void PmergeMe::checkVecDebug(std::vector<int> res)
 	std::cout << "sorting vector: SUCCESS" << std::endl;
 }
 
-void PmergeMe::checkQueDebug(std::deque<int> res)
+void PmergeMe::checkQue(std::deque<int> res)
 {
 	if (res.size() != _vec.size())
 	{
