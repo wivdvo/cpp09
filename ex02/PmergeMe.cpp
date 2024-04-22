@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 15:46:56 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:23:36 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <deque>
 #include <exception>
 #include <stdexcept>
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 PmergeMe::PmergeMe() {}
 
@@ -48,49 +50,6 @@ size_t PmergeMe::_jacobsNb[] = {
 
 size_t PmergeMe::biggestJacUsed = 0;
 
-void PmergeMe::doMerge(int ac, char** av)
-{
-	//fill vector & deque
-	int temp;
-	for (int i = 1; i < ac; i++)
-	{
-		temp = checkNb(av[i]);
-		_vec.push_back(temp);
-		_que.push_back(temp);
-	}
-
-
-	//start sorting the vector
-	std::vector<int> res;
-	res = sortVec(_vec);
-
-
-	std::cout << std::endl << "Final: " << std::endl;
-	printVec(res);
-	checkRes(res);
-}
-
-void PmergeMe::checkRes(std::vector<int> res)
-{
-	std::cout << "Biggest Jac used " << biggestJacUsed << std::endl;
-	if (res.size() != _vec.size())
-	{
-		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
-		throw std::runtime_error("Lost elements");
-	}
-	
-	for (size_t i = 1; i < res.size(); i++)
-	{
-		if (res[i-1] > res[i])
-		{
-			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
-			throw std::runtime_error("Not sorted");
-		}
-	}
-
-	std::cout << std::endl << "SUCCESS" << std::endl;
-}
-
 int PmergeMe::checkNb(std::string nbString)
 {
 	//check each number
@@ -114,35 +73,147 @@ int PmergeMe::checkNb(std::string nbString)
 	return nb;
 }
 
-int PmergeMe::calcInsertionArea(int nJacNb)
+void PmergeMe::printBefore(std::vector<int> vec)
 {
-	//insertion area is nJacNb to the power of 2 minus 1
-	int insertionArea = (nJacNb * nJacNb) - 1;
-	std::cout << "nJacNb:"<< nJacNb << " insertionArea " << insertionArea << std::endl;
+	std::cout << "Before: ";
 
-
-	return insertionArea;
+	if (vec.size() <= 5)
+	{
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
 }
 
-void PmergeMe::setPosForInsertion(int& beginIndex, int& endIndex, int elementsInserted, int nJacNb, int j)
+void PmergeMe::printAfter(std::vector<int> vec)
 {
-	//turn form 0 start to 1 start index 
-	nJacNb++;
+	std::cout << "After:  ";
 
+	if (vec.size() <= 5)
+	{
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
+}
 
-	//find end index
-	// for b3 it should a3
-	endIndex = j + elementsInserted;
-	beginIndex = std::abs(endIndex - calcInsertionArea(nJacNb));
+void PmergeMe::doMerge(int ac, char** av)
+{
+	//fill vector
+	clock_t start = clock();
+	int temp;
+	for (int i = 1; i < ac; i++)
+	{
+		temp = checkNb(av[i]);
+		_vec.push_back(temp);
+	}
 
-	if (endIndex < 0)
-		endIndex = 0;
-	if (beginIndex < 0)
-		beginIndex = 0;
+	//start sorting the vector
+	std::vector<int> resVec;
+	resVec = sortVec(_vec);
+	clock_t end = clock();
+	double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
-	std::cout << "beginIndex: " << beginIndex << " endIndex: " << endIndex << std::endl;
 	
+	//fill deque
+	start = clock();
+	start = clock();
+	for (int i = 1; i < ac; i++)
+	{
+		temp = checkNb(av[i]);
+		_que.push_back(temp);
+	}
 	
+	//start sotring the deque
+	std::deque<int> resQue;
+	resQue = sortQue(_que);
+	end = clock();
+	double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
+
+	
+	printBefore(_vec);
+	printAfter(resVec);
+
+	std::cout << std::endl;
+	
+	printTimes(vecTime, queTime, _vec.size());
+
+	std::cout << std::endl;
+
+	// std::cout << std::endl << "Final vec: " << std::endl;
+	// printVecDebug(resVec);
+	checkVecDebug(resVec);
+
+	// std::cout << std::endl << "Final que: " << std::endl;
+	// printQueDebug(resQue);
+	checkQueDebug(resQue);
+}
+
+void PmergeMe::printTimes(double vecTime, double queTime, int n)
+{
+	std::cout << std::fixed << std::setprecision(3);
+	std::cout << "Time to processe a range of " << n <<  " elements with std::vector<int>: " << vecTime  << " ms" << std::endl;
+	std::cout << "Time to processe a range of " << n <<  " elements with std::deque<int>: " << queTime  << " ms" << std::endl;
+}
+
+void PmergeMe::checkVecDebug(std::vector<int> res)
+{
+	if (res.size() != _vec.size())
+	{
+		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
+		throw std::runtime_error("Lost elements");
+	}
+	
+	for (size_t i = 1; i < res.size(); i++)
+	{
+		if (res[i-1] > res[i])
+		{
+			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
+			throw std::runtime_error("Not sorted");
+		}
+	}
+
+	std::cout << "sorting vector: SUCCESS" << std::endl;
+}
+
+void PmergeMe::checkQueDebug(std::deque<int> res)
+{
+	if (res.size() != _vec.size())
+	{
+		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
+		throw std::runtime_error("Lost elements");
+	}
+	
+	for (size_t i = 1; i < res.size(); i++)
+	{
+		if (res[i-1] > res[i])
+		{
+			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
+			throw std::runtime_error("Not sorted");
+		}
+	}
+
+	std::cout << "sorting deque:  SUCCESS" << std::endl;
 }
 
 std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
@@ -199,14 +270,6 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 			b.push_back(vec[i+1]);            
 		}
 	}
-
-	std::cout << "after making pairs" << std::endl;
-	std::cout << "a: " << std::endl;
-	printVec(a);
-	std::cout << "b: " << std::endl;
-	printVec(b);
-
-	
 	
 	
 	//split recursivly
@@ -219,7 +282,6 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	a.insert(a.begin(), b[0]);
 
 
-
 	//set values that are needed for the insertion
 	int elementsToInsert = b.size() - 1;
 	int elementsInserted = 1;
@@ -227,34 +289,20 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	size_t jacNb;
 	size_t lastJacobs = 1;
 	std::vector<int>::iterator it;
-	int beginIndex = 0;
-	int endIndex = 0;
 	
 	
 	//insert from current JacNb to last JacNb
 	//repeat until all of b was inserted
-
-	std::cout << "elemntsToInsert: " << elementsToInsert << std::endl;
 	if (elementsToInsert > 3)
 	{
 		for (; elementsToInsert > 0; nJacNb++)
 		{
-			std::cout << "in loop" << std::endl;
-			std::cout << "a: " << std::endl;
-			printVec(a);
-			std::cout << "b: " << std::endl;
-			printVec(b);
 			jacNb = _jacobsNb[nJacNb];
-			if (jacNb > biggestJacUsed)
-				biggestJacUsed = jacNb;
-			std::cout << "elemntsToInsert: " << elementsToInsert << std::endl;
 			it = a.end();
 			for (size_t j = jacNb - 1; j > lastJacobs - 1 && elementsToInsert > 0; j--, elementsToInsert--)
 			{
 				if (j > b.size() - 1)
 					j = b.size() - 1;
-				std::cout << "j: " << j << " b: " << b.size() << std::endl;
-				std::cout << "element: " << b[j] << std::endl;
 				it = std::upper_bound(a.begin(), a.end(), b[j]);
 				if (it != a.end())
 					it = std::upper_bound(a.begin(), it, b[j]);
@@ -271,20 +319,134 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	{
 		while (elementsToInsert > 0)
 		{
-			std::cout << "element: " << b[elementsToInsert] << std::endl;
-			setPosForInsertion(beginIndex, endIndex, elementsInserted, nJacNb, elementsToInsert);
 			it = std::upper_bound(a.begin(), a.end(), b[elementsToInsert]);
 			a.insert(it, b[elementsToInsert]);
 			elementsInserted++;
 			elementsToInsert--;
 		}
 	}
-
 	
-	std::cout << "after loop" << std::endl;
-	std::cout << "a: " << std::endl;
-	printVec(a);
 
+	//if there was odd amount of elements insert it in A
+	if (hadOdd)
+	{
+		it = std::upper_bound(a.begin(), a.end(), oddElement);
+		a.insert(it, oddElement);
+	}
+
+	return a;
+}
+
+std::deque<int> PmergeMe::sortQue(std::deque<int> que)
+{
+	//hardcode case for 2 or less elements
+	if (que.size() <= 2)
+	{
+		std::deque<int> ret;
+		if (que.size() == 1)
+		{
+			ret.push_back(que[0]);	
+		}	
+		else if (que[0] < que[1])
+		{
+			ret.push_back(que[0]);
+			ret.push_back(que[1]);
+		}
+		else
+		{
+			ret.push_back(que[1]);
+			ret.push_back(que[0]);
+		}
+		return ret;
+	}
+
+
+	//check if there is an odd amount of elements
+	//if so safe it to add it to A in the end
+	int oddElement;
+	bool hadOdd = false;
+	if (que.size() % 2 == 1)
+	{
+		oddElement = que[que.size() - 1];
+		que.pop_back();
+		hadOdd = true;
+		//std::cout << "had odd" << std::endl;
+	}
+
+
+	//create pairs and put bigger in A and smaller in B
+	std::deque<int> a;
+	std::deque<int> b;
+
+	for (size_t i = 0; i < que.size() - 1; i += 2)
+	{
+		if (que[i] < que[i+1])
+		{
+			a.push_back(que[i+1]);
+			b.push_back(que[i]);
+		}
+		else 
+		{
+			a.push_back(que[i]);
+			b.push_back(que[i+1]);            
+		}
+	}
+	
+	
+	//split recursivly
+	a = sortQue(a);
+	b = sortQue(b);
+
+
+	//do insertion	
+	//b1 goes in front of a1
+	a.insert(a.begin(), b[0]);
+
+
+	//set values that are needed for the insertion
+	int elementsToInsert = b.size() - 1;
+	int elementsInserted = 1;
+	size_t nJacNb = 1;
+	size_t jacNb;
+	size_t lastJacobs = 1;
+	std::deque<int>::iterator it;
+	
+	
+	//insert from current JacNb to last JacNb
+	//repeat until all of b was inserted
+	if (elementsToInsert > 3)
+	{
+		for (; elementsToInsert > 0; nJacNb++)
+		{
+			jacNb = _jacobsNb[nJacNb];
+			it = a.end();
+			for (size_t j = jacNb - 1; j > lastJacobs - 1 && elementsToInsert > 0; j--, elementsToInsert--)
+			{
+				if (j > b.size() - 1)
+					j = b.size() - 1;
+				it = std::upper_bound(a.begin(), a.end(), b[j]);
+				if (it != a.end())
+					it = std::upper_bound(a.begin(), it, b[j]);
+				else
+					it = std::upper_bound(a.begin(), a.begin(), b[j]);
+				a.insert(it, b[j]);
+				it--;
+				elementsInserted++;
+			}
+			lastJacobs = jacNb;
+		}
+	}
+	else
+	{
+		while (elementsToInsert > 0)
+		{
+			it = std::upper_bound(a.begin(), a.end(), b[elementsToInsert]);
+			a.insert(it, b[elementsToInsert]);
+			elementsInserted++;
+			elementsToInsert--;
+		}
+	}
+	
 
 	//if there was odd amount of elements insert it in A
 	if (hadOdd)
@@ -297,10 +459,18 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 }
 
 
-void PmergeMe::printVec(std::vector<int> vec)
+void PmergeMe::printVecDebug(std::vector<int> vec)
 {
 	for (size_t i = 0; i < vec.size(); i++)
 	{
 		std::cout << i + 1 <<": "<< vec[i] << std::endl;
+	}
+}
+
+void PmergeMe::printQueDebug(std::deque<int> que)
+{
+	for (size_t i = 0; i < que.size(); i++)
+	{
+		std::cout << i + 1 <<": "<< que[i] << std::endl;
 	}
 }

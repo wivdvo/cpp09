@@ -2,11 +2,11 @@
 
 for N in $(seq 2 3000)
 do
-    output=$(make test N=$N | grep "SUCCESS")
+    output=$(make test N=$N | grep "Error")
     if [[ -z "$output" ]]; then
-        echo "Test failed for N=$N"
-		break
-	else
 		echo "Test $N passed"
+	else
+		echo "Test failed for N=$N"
+		break
     fi
 done
