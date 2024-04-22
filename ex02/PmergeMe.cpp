@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 15:46:02 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:46:56 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,13 +255,11 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 					j = b.size() - 1;
 				std::cout << "j: " << j << " b: " << b.size() << std::endl;
 				std::cout << "element: " << b[j] << std::endl;
-				//calcInsertionArea(elementsInserted, nJacNb);
-				setPosForInsertion(beginIndex, endIndex, elementsInserted, nJacNb, j);
 				it = std::upper_bound(a.begin(), a.end(), b[j]);
 				if (it != a.end())
-					it = std::upper_bound(a.begin() + beginIndex, it, b[j]);
+					it = std::upper_bound(a.begin(), it, b[j]);
 				else
-					it = std::upper_bound(a.begin() + beginIndex, a.begin() + endIndex, b[j]);
+					it = std::upper_bound(a.begin(), a.begin(), b[j]);
 				a.insert(it, b[j]);
 				it--;
 				elementsInserted++;
