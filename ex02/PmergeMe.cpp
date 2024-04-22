@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 17:38:43 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:55:36 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <deque>
-#include <exception>
 #include <stdexcept>
 #include <sstream>
 #include <vector>
@@ -41,97 +40,12 @@ PmergeMe::~PmergeMe() {}
 
 std::vector<int> PmergeMe::_vec;
 std::deque<int> PmergeMe::_que;
-size_t PmergeMe::_jacobsNb[] = {
+const size_t PmergeMe::_jacobsNb[] = {
     1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 
     349525, 699051, 1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971, 
     357913941, 715827883, 1431655765, 2863311531, 5726623061, 11453246123, 22906492245, 45812984491, 
     91625968981, 183251937963
 };
-
-int PmergeMe::checkNb(std::string nbString)
-{
-	//check each number
-	for (size_t i = 0; i < nbString.size(); i++)
-	{
-		if (!isdigit(nbString[i]))
-			throw std::runtime_error("Invalid number (needs to be positive INT)");
-	}
-
-
-	//converting string to int and back to string
-	//comparing original string to reconverted string
-	//if they dont match overlow occured
-	std::istringstream iss(nbString);
-	std::ostringstream oss;
-	int nb;
-	iss >> nb;
-	oss << nb;
-	if (oss.str() != nbString)
-		throw std::runtime_error("Number would overflow");
-	return nb;
-}
-
-void PmergeMe::printBefore(std::vector<int> vec)
-{
-	std::cout << std::endl << "Before:  ";
-
-	if (vec.size() <= 5)
-	{
-		for (size_t i = 0; i < vec.size(); i++)
-		{
-			std::cout << vec[i] << " ";
-		}
-		std::cout << std::endl;
-	}
-	else
-	{
-		for (size_t i = 0; i < 4; i++)
-		{
-			std::cout << vec[i] << " ";
-		}
-		std::cout << "[...]" << std::endl;
-	}
-}
-
-void PmergeMe::printAfter(std::vector<int> vec, std::deque<int> que)
-{
-	std::cout << std::endl << "After: " << std::endl;
-	std::cout << "Vector:  ";
-	if (vec.size() <= 5)
-	{
-		for (size_t i = 0; i < vec.size(); i++)
-		{
-			std::cout << vec[i] << " ";
-		}
-		std::cout << std::endl;
-	}
-	else
-	{
-		for (size_t i = 0; i < 4; i++)
-		{
-			std::cout << vec[i] << " ";
-		}
-		std::cout << "[...]" << std::endl;
-	}
-
-	std::cout << "Deque:   ";
-	if (que.size() <= 5)
-	{
-		for (size_t i = 0; i < que.size(); i++)
-		{
-			std::cout << que[i] << " ";
-		}
-		std::cout << std::endl;
-	}
-	else
-	{
-		for (size_t i = 0; i < 4; i++)
-		{
-			std::cout << que[i] << " ";
-		}
-		std::cout << "[...]" << std::endl;
-	}
-}
 
 void PmergeMe::doMerge(int ac, char** av)
 {
@@ -173,52 +87,6 @@ void PmergeMe::doMerge(int ac, char** av)
 	checkQue(resQue);
 }
 
-void PmergeMe::printTimes(double vecTime, double queTime, int n)
-{
-	std::cout << std::fixed << std::setprecision(3);
-	std::cout << "Time to processe a range of " << n <<  " elements with std::vector<int>: " << vecTime  << " ms" << std::endl;
-	std::cout << "Time to processe a range of " << n <<  " elements with std::deque<int>: " << queTime  << " ms" << std::endl;
-}
-
-void PmergeMe::checkVec(std::vector<int> res)
-{
-	if (res.size() != _vec.size())
-	{
-		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
-		throw std::runtime_error("Lost elements");
-	}
-	
-	for (size_t i = 1; i < res.size(); i++)
-	{
-		if (res[i-1] > res[i])
-		{
-			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
-			throw std::runtime_error("Not sorted");
-		}
-	}
-
-	std::cout << "sorting vector: SUCCESS" << std::endl;
-}
-
-void PmergeMe::checkQue(std::deque<int> res)
-{
-	if (res.size() != _vec.size())
-	{
-		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
-		throw std::runtime_error("Lost elements");
-	}
-	
-	for (size_t i = 1; i < res.size(); i++)
-	{
-		if (res[i-1] > res[i])
-		{
-			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
-			throw std::runtime_error("Not sorted");
-		}
-	}
-
-	std::cout << "sorting deque:  SUCCESS" << std::endl;
-}
 
 std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 {
@@ -253,7 +121,6 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 		oddElement = vec[vec.size() - 1];
 		vec.pop_back();
 		hadOdd = true;
-		//std::cout << "had odd" << std::endl;
 	}
 
 
@@ -374,7 +241,6 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 		oddElement = que[que.size() - 1];
 		que.pop_back();
 		hadOdd = true;
-		//std::cout << "had odd" << std::endl;
 	}
 
 
@@ -467,7 +333,7 @@ void PmergeMe::printVecDebug(std::vector<int> vec)
 {
 	for (size_t i = 0; i < vec.size(); i++)
 	{
-		std::cout << i + 1 <<": "<< vec[i] << std::endl;
+		std::cout << i + 1 << ": "<< vec[i] << std::endl;
 	}
 }
 
@@ -475,6 +341,139 @@ void PmergeMe::printQueDebug(std::deque<int> que)
 {
 	for (size_t i = 0; i < que.size(); i++)
 	{
-		std::cout << i + 1 <<": "<< que[i] << std::endl;
+		std::cout << i + 1 << ": "<< que[i] << std::endl;
 	}
+}
+
+
+int PmergeMe::checkNb(std::string nbString)
+{
+	//check each number
+	for (size_t i = 0; i < nbString.size(); i++)
+	{
+		if (!isdigit(nbString[i]))
+			throw std::runtime_error("Invalid number (needs to be positive INT)");
+	}
+
+
+	//converting string to int and back to string
+	//comparing original string to reconverted string
+	//if they dont match overlow occured
+	std::istringstream iss(nbString);
+	std::ostringstream oss;
+	int nb;
+	iss >> nb;
+	oss << nb;
+	if (oss.str() != nbString)
+		throw std::runtime_error("Number would overflow");
+	return nb;
+}
+
+void PmergeMe::printBefore(std::vector<int> vec)
+{
+	std::cout << std::endl << "Before:  ";
+
+	if (vec.size() <= 5)
+	{
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
+}
+
+void PmergeMe::printAfter(std::vector<int> vec, std::deque<int> que)
+{
+	std::cout << std::endl << "After: " << std::endl;
+	std::cout << "Vector:  ";
+	if (vec.size() <= 5)
+	{
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << vec[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
+
+	std::cout << "Deque:   ";
+	if (que.size() <= 5)
+	{
+		for (size_t i = 0; i < que.size(); i++)
+		{
+			std::cout << que[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	else
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			std::cout << que[i] << " ";
+		}
+		std::cout << "[...]" << std::endl;
+	}
+}
+
+void PmergeMe::printTimes(double vecTime, double queTime, int n)
+{
+	std::cout << std::fixed << std::setprecision(3);
+	std::cout << "Time to processe a range of " << n <<  " elements with std::vector<int>: " << vecTime  << " ms" << std::endl;
+	std::cout << "Time to processe a range of " << n <<  " elements with std::deque<int>: " << queTime  << " ms" << std::endl;
+}
+
+void PmergeMe::checkVec(std::vector<int> res)
+{
+	if (res.size() != _vec.size())
+	{
+		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
+		throw std::runtime_error("Lost elements");
+	}
+	
+	for (size_t i = 1; i < res.size(); i++)
+	{
+		if (res[i-1] > res[i])
+		{
+			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
+			throw std::runtime_error("Not sorted");
+		}
+	}
+
+	std::cout << "sorting vector: SUCCESS" << std::endl;
+}
+
+void PmergeMe::checkQue(std::deque<int> res)
+{
+	if (res.size() != _vec.size())
+	{
+		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
+		throw std::runtime_error("Lost elements");
+	}
+	
+	for (size_t i = 1; i < res.size(); i++)
+	{
+		if (res[i-1] > res[i])
+		{
+			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
+			throw std::runtime_error("Not sorted");
+		}
+	}
+
+	std::cout << "sorting deque:  SUCCESS" << std::endl;
 }

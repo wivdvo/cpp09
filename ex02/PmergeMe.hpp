@@ -6,11 +6,10 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:33 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 17:36:31 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:42:49 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <queue>
 #include <vector>
 #include <deque>
 #include <string>
@@ -43,5 +42,5 @@ class PmergeMe
 		
 		static std::vector<int> _vec;
 		static std::deque<int> _que;
-		static size_t _jacobsNb[];
+		static const size_t _jacobsNb[];
 };
