@@ -40,4 +40,4 @@ test:			all
 valgrindtest:	all
 					valgrind ./$(NAME) `shuf -i 1-100000 -n $(N) | tr "\n" " "`
 
-.PHONY:			all clean fclean re
+.PHONY:			all clean fclean re test valgrindtest
