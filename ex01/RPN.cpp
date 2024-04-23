@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:18 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/03 18:01:19 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:33:50 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <climits>
 
 RPN::RPN(void) {}
 
@@ -65,71 +66,111 @@ void RPN::doRPN(std::string input)
 
 void RPN::div()
 {
-	int a = 0;
-	int b = 0;
+	long a = 0;
+	long b = 0;
+	long temp;
 	if (!_stack.empty())
 	{
 		a = _stack.top();
 		_stack.pop();
+	}
+	else {
+		throw std::runtime_error("Invalid input");
 	}
 	if (!_stack.empty())
 	{
 		b = _stack.top();
 		_stack.pop();
 	}
+	else {
+		throw std::runtime_error("Invalid input");
+	}
 	if (a == 0)
 		throw std::runtime_error("Division by 0 is undifined.");
+	temp = b / a;
+	if (temp >= INT_MAX)
+		throw std::runtime_error("Int overflow");
 	_stack.push(b / a);
 }
 
 void RPN::mult()
 {
-	int a = 0;
-	int b = 0;
+	long a = 0;
+	long b = 0;
+	long temp;
 	if (!_stack.empty())
 	{
 		a = _stack.top();
 		_stack.pop();
+	}
+	else {
+		throw std::runtime_error("Invalid input");
 	}
 	if (!_stack.empty())
 	{
 		b = _stack.top();
 		_stack.pop();
 	}
+	else {
+		throw std::runtime_error("Invalid input");
+	}
+	temp = a * b;
+	if (temp >= INT_MAX)
+		throw std::runtime_error("Int overflow");
 	_stack.push(a * b);
 }
 
 void RPN::sub()
 {
-	int a = 0;
-	int b = 0;
+	long a = 0;
+	long b = 0;
+	long temp;
 	if (!_stack.empty())
 	{
 		a = _stack.top();
 		_stack.pop();
+	}
+	else {
+		throw std::runtime_error("Invalid input");
 	}
 	if (!_stack.empty())
 	{
 		b = _stack.top();
 		_stack.pop();
 	}
+	else {
+		throw std::runtime_error("Invalid input");
+	}
+	temp = b - a;
+	if (temp >= INT_MAX)
+		throw std::runtime_error("Int overflow");
 	_stack.push(b - a);
 }
 
 void RPN::add()
 {
-	int a = 0;
-	int b = 0;
+	long a = 0;
+	long b = 0;
+	long temp;
 	if (!_stack.empty())
 	{
 		a = _stack.top();
 		_stack.pop();
+	}
+	else {
+		throw std::runtime_error("Invalid input");
 	}
 	if (!_stack.empty())
 	{
 		b = _stack.top();
 		_stack.pop();
 	}
+	else {
+		throw std::runtime_error("Invalid input");
+	}
+	temp = a + b;
+	if (temp >= INT_MAX)
+		throw std::runtime_error("Int overflow");
 	_stack.push(a + b);
 }
 

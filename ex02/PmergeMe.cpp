@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/22 17:55:36 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:15:00 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,13 +294,13 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 			{
 				if (j > b.size() - 1)
 					j = b.size() - 1;
-				it = std::upper_bound(a.begin(), a.end(), b[j]);
+				//it = std::upper_bound(a.begin(), a.end(), b[j]);
 				if (it != a.end())
 					it = std::upper_bound(a.begin(), it, b[j]);
 				else
 					it = std::upper_bound(a.begin(), a.begin(), b[j]);
 				a.insert(it, b[j]);
-				it--;
+				//it--;
 				elementsInserted++;
 			}
 			lastJacobs = jacNb;
