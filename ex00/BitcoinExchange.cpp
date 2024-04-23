@@ -44,8 +44,6 @@ std::map<size_t, float> BitcoinExchange::_db;
 
 void BitcoinExchange::doExchange(char* fileString)
 {
-	(void)fileString;
-
 	handleData();
 	handleInputAndConvert(fileString);
 }
