@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/24 14:02:55 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/24 17:38:55 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,12 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	size_t lastJacobs = 1;
 	std::vector<int>::iterator it;
 	
+	std::cout << "a: " << std::endl;
+	printVecDebug(a);
+	std::cout << "b: " << std::endl;
+
+	printVecDebug(b);
+
 	
 	//insert from current JacNb to last JacNb
 	//repeat until all of b was inserted
@@ -180,12 +186,13 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 			{
 				if (j > b.size() - 1)
 					j = b.size() - 1;
-				//it = std::upper_bound(a.begin(), a.end(), b[j]);
 				if (it != a.end())
 					it = std::upper_bound(a.begin(), it, b[j]);
 				else
-					it = std::upper_bound(a.begin(), a.begin(), b[j]);
+					it = std::upper_bound(a.begin(), a.end(), b[j]);
 				a.insert(it, b[j]);
+				std::cout << "Element: " << b[j] << std::endl;
+				printVecDebug(a);
 				it--;
 				elementsInserted++;
 			}
@@ -304,7 +311,7 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 				if (it != a.end())
 					it = std::upper_bound(a.begin(), it, b[j]);
 				else
-					it = std::upper_bound(a.begin(), a.begin(), b[j]);
+					it = std::upper_bound(a.begin(), a.end(), b[j]);
 				a.insert(it, b[j]);
 				it--;
 				elementsInserted++;
@@ -337,10 +344,12 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 
 void PmergeMe::printVecDebug(std::vector<int> vec)
 {
+	std::cout << "a: " << std::endl;
 	for (size_t i = 0; i < vec.size(); i++)
 	{
 		std::cout << i + 1 << ": "<< vec[i] << std::endl;
 	}
+	std::cout << std::endl;
 }
 
 void PmergeMe::printQueDebug(std::deque<int> que)
@@ -483,3 +492,5 @@ void PmergeMe::checkQue(std::deque<int> res)
 
 	std::cout << "sorting deque:  SUCCESS" << std::endl;
 }
+
+
