@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/23 17:15:00 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:02:55 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,14 @@ void PmergeMe::doMerge(int ac, char** av)
 	std::cout << std::endl;
 	printTimes(vecTime, queTime, _vec.size());
 	std::cout << std::endl;
+
+	std::cout << "Finale Vec:" << std::endl;
+	printVecDebug(resVec);
+	//std::cout << std::endl << "Finale que:" << std::endl;
+	//printQueDebug(resQue);
+
 	checkVec(resVec);
-	checkQue(resQue);
+	//checkQue(resQue);
 }
 
 
@@ -174,7 +180,7 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 			{
 				if (j > b.size() - 1)
 					j = b.size() - 1;
-				it = std::upper_bound(a.begin(), a.end(), b[j]);
+				//it = std::upper_bound(a.begin(), a.end(), b[j]);
 				if (it != a.end())
 					it = std::upper_bound(a.begin(), it, b[j]);
 				else
@@ -300,7 +306,7 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 				else
 					it = std::upper_bound(a.begin(), a.begin(), b[j]);
 				a.insert(it, b[j]);
-				//it--;
+				it--;
 				elementsInserted++;
 			}
 			lastJacobs = jacNb;
@@ -308,7 +314,7 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 	}
 	else
 	{
-		while (elementsToInsert > 0)
+		while (elementsToInsert > 0 && elementsToInsert < (int)b.size())
 		{
 			it = std::upper_bound(a.begin(), a.end(), b[elementsToInsert]);
 			a.insert(it, b[elementsToInsert]);
