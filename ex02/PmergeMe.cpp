@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/25 17:40:31 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/25 17:48:37 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,9 +137,12 @@ void PmergeMe::prepareVec(std::vector<int> vec)
 	chains.b = b;
 	
 	chains = sortA(chains);
+	chains = sortB(chains);
 
 	a = chains.a;
 	b = chains.b;
+
+	std::cout << "is it working" << std::endl;
 
 }
 
@@ -190,19 +193,7 @@ Chains PmergeMe::sortA(Chains chains)
 	
 	chains.a = a;
 	chains.b = b;
-	retA = sortA(chains);
-	a = retA.a;
-	b = retA.b;
-	std::cout << "hello111" << std::endl;
-
-	chains.a = a;
-	chains.b = b;
-	retB = sortB(chains);
-	chains.a = retB.a;
-	chains.b = retB.b;
-
-	std::cout << "hello" << std::endl;
-	doVecInsertion(chains);
+	chains = sortA(chains);
 
 	return chains;
 }
