@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/25 17:48:37 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:00:55 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,15 @@ void PmergeMe::doMerge(int ac, char** av)
 	}
 	//sorting the vector
 	std::vector<int> resVec;
-	prepareVec(_vec);
+
+	Chains chains;
+	chains.n = _vec;
+	chains = sortVec(chains, 'n');
+
+	std::cout << "final" << std::endl;
+	printVecDebug(chains.a);
+
+	
 	clock_t end = clock();
 	double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
@@ -101,167 +109,362 @@ void PmergeMe::doMerge(int ac, char** av)
 	//checkQue(resQue);
 }
 
-void PmergeMe::prepareVec(std::vector<int> vec)
+// void PmergeMe::prepareVec(std::vector<int> vec)
+// {
+// 	Chains chains;
+// 	std::vector<int> a;
+// 	std::vector<int> b;
+// 	int oddElement = -1;
+
+// 	//check if there is an odd amount of elements
+// 	//if so safe it to add it to A in the very end
+// 	if (vec.size() % 2 == 1)
+// 	{
+// 		oddElement = vec[vec.size() - 1];
+// 		vec.pop_back();
+// 	}
+
+
+// 	//create pairs and put bigger in A and smaller in B
+// 	for (size_t i = 0; i < vec.size() - 1; i += 2)
+// 	{
+// 		comparisonCount++;
+// 		if (vec[i] < vec[i+1])
+// 		{
+// 			a.push_back(vec[i+1]);
+// 			b.push_back(vec[i]);
+// 		}
+// 		else 
+// 		{
+// 			a.push_back(vec[i]);
+// 			b.push_back(vec[i+1]);            
+// 		}
+// 	}
+	
+// 	chains.a = a;
+// 	chains.b = b;
+	
+// 	chains = sortVec(chains, 'a', oddElement);
+// }
+
+//just bc its even once it wont saty even
+//also prep function is bad
+
+
+Chains PmergeMe::sortVec(Chains chains, char mode)
 {
-	Chains chains;
+	std::cout << "begin sort vec" << std::endl;
 	std::vector<int> a;
 	std::vector<int> b;
+	Chains retA;
+	Chains retB;
 	int oddElement = -1;
-
+	
 	//check if there is an odd amount of elements
 	//if so safe it to add it to A in the very end
-	if (vec.size() % 2 == 1)
+
+	if (mode == 'n')
 	{
-		oddElement = vec[vec.size() - 1];
-		vec.pop_back();
+		if (chains.n.size() % 2 == 1)
+		{
+			oddElement = chains.n[chains.n.size() - 1];
+			chains.n.pop_back();
+		}	
+	}
+	if (mode == 'a')
+	{
+		if (chains.a.size() % 2 == 1)
+		{
+			oddElement = chains.a[chains.a.size() - 1];
+			chains.a.pop_back();
+		}	
+	}
+	if (mode == 'b')
+	{
+		if (chains.b.size() % 2 == 1)
+		{
+			oddElement = chains.b[chains.b.size() - 1];
+			chains.b.pop_back();
+		}
 	}
 
-
-	//create pairs and put bigger in A and smaller in B
-	for (size_t i = 0; i < vec.size() - 1; i += 2)
+	
+	if (mode == 'a' && chains.a.size() == 2)
 	{
-		comparisonCount++;
-		if (vec[i] < vec[i+1])
+		if (chains.a[0] < chains.a[1])
 		{
-			a.push_back(vec[i+1]);
-			b.push_back(vec[i]);
+			return chains;	
+		}
+		else
+		{
+			std::swap(chains.a[0], chains.a[1]);
+			std::swap(chains.b[0], chains.b[1]);
+			return chains;	
+		}
+	}
+	if (mode == 'b' && chains.b.size() == 2)
+	{
+		return chains;
+	}
+
+	for (size_t i = 0; mode == 'n' && i < chains.n.size() - 1; i += 2)
+	{
+		if (chains.n[i] < chains.n[i+1])
+		{
+			a.push_back(chains.n[i+1]);
+			b.push_back(chains.n[i]);
 		}
 		else 
 		{
-			a.push_back(vec[i]);
-			b.push_back(vec[i+1]);            
-		}
+			a.push_back(chains.n[i]);
+			b.push_back(chains.n[i+1]);            
+		}		
 	}
 	
+//	split chain in A and B again
+	for (size_t i = 0; (mode == 'a' || mode == 'b') && i < chains.a.size() - 1; i += 2)
+	{
+		if (mode == 'a')
+		{
+			if (chains.a[i] < chains.a[i+1])
+			{
+				a.push_back(chains.a[i+1]);
+				b.push_back(chains.a[i]);
+			}
+			else 
+			{
+				a.push_back(chains.a[i]);
+				b.push_back(chains.a[i+1]);            
+			}
+		}
+		if (mode == 'b')
+		{
+			if (chains.b[i] < chains.b[i+1])
+			{
+				a.push_back(chains.b[i+1]);
+				b.push_back(chains.b[i]);
+			}
+			else 
+			{
+				a.push_back(chains.b[i]);
+				b.push_back(chains.b[i+1]);            
+			}
+		}
+	}
+
+	std::cout << "before recursion" << std::endl;
+
 	chains.a = a;
 	chains.b = b;
-	
-	chains = sortA(chains);
-	chains = sortB(chains);
+
+	chains = sortVec(chains, 'a');
+	chains = sortVec(chains, 'b');
 
 	a = chains.a;
 	b = chains.b;
 
-	std::cout << "is it working" << std::endl;
-
-}
-
-Chains PmergeMe::sortA(Chains chains)
-{
-	std::cout << "begin sortA" << std::endl;
-	Chains retA;
-	Chains retB;
-	std::vector<int> a;
-	std::vector<int> b;
-
-
-//	basecase to end recursion and sort Chain A
-//	if A needs to be swapped B needs to do same to keep pairs
-	if (chains.a.size() == 2)
-	{
-		comparisonCount++;
-		if (chains.a[0] < chains.a[1])
-		{
-			return chains;
-		}
-		if (chains.a[0] > chains.a[1])
-		{
-			std::swap(chains.a[0], chains.a[1]);
-			std::swap(chains.b[0], chains.b[1]);
-			
-			return chains;
-		}
-	}
-
-
-//	split chain in A and B again
-	for (size_t i = 0; i < chains.a.size() - 1; i += 2)
-	{
-		comparisonCount++;
-		if (chains.a[i] < chains.a[i+1])
-		{
-			a.push_back(chains.a[i+1]);
-			b.push_back(chains.a[i]);
-		}
-		else 
-		{
-			a.push_back(chains.a[i]);
-			b.push_back(chains.a[i+1]);            
-		}
-	}
-	
-	
-	chains.a = a;
-	chains.b = b;
-	chains = sortA(chains);
-
-	return chains;
-}
-
-void PmergeMe::doVecInsertion(Chains chains)
-{
-	std::vector<int> a = chains.a;
-	std::vector<int> b = chains.b;
-	int elementsToInsert = b.size();
-	int elementsInserted = 0;
-	int nJacNb = 1;
-	size_t JacNb;
-	size_t lastJacNb = 1;
-
-
-	std::cout << "a: " << std::endl;
+	std::cout << "a" << std::endl;
 	printVecDebug(a);
-	std::cout << std::endl << "b: " << std::endl;
+	std::cout << "b" << std::endl;
 	printVecDebug(b);
+	std::cout << std::endl;
 
-	a.insert(a.begin(), b[0]);
-	elementsInserted++;
-	elementsToInsert--;
 
-	// for (; elementsToInsert > 0; nJacNb++)
-	// {
-	// 	JacNb = _jacobsNb[nJacNb];
-	// 	for ()
-	// }
 	
-}
 
-Chains PmergeMe::sortB(Chains chains)
-{
-	Chains retB;
-	std::vector<int> a;
-	std::vector<int> b;
 
-	if (chains.b.size() == 2)
+
+
+
+
+
+
+
+
+
+
+	if (oddElement != -1)
 	{
-		return chains;
+		a.insert(std::upper_bound(a.begin(), a.end(), oddElement), oddElement);
 	}
 	
-//	split chain in A and B again
-	for (size_t i = 0; i < chains.b.size() - 1; i += 2)
-	{
-		comparisonCount++;
-		if (chains.b[i] < chains.b[i+1])
-		{
-			a.push_back(chains.b[i+1]);
-			b.push_back(chains.b[i]);
-		}
-		else 
-		{
-			a.push_back(chains.b[i]);
-			b.push_back(chains.b[i+1]);            
-		}
-	}
 
 	chains.a = a;
-	chains.b = b;
-	
-	retB = sortB(chains);
-	chains.a = retB.a;
-	chains.b = retB.b;
 
 	return chains;
 }
+
+
+
+
+
+
+
+
+
+
+
+// void PmergeMe::prepareVec(std::vector<int> vec)
+// {
+// 	Chains chains;
+// 	std::vector<int> a;
+// 	std::vector<int> b;
+// 	int oddElement = -1;
+
+// 	//check if there is an odd amount of elements
+// 	//if so safe it to add it to A in the very end
+// 	if (vec.size() % 2 == 1)
+// 	{
+// 		oddElement = vec[vec.size() - 1];
+// 		vec.pop_back();
+// 	}
+
+
+// 	//create pairs and put bigger in A and smaller in B
+// 	for (size_t i = 0; i < vec.size() - 1; i += 2)
+// 	{
+// 		comparisonCount++;
+// 		if (vec[i] < vec[i+1])
+// 		{
+// 			a.push_back(vec[i+1]);
+// 			b.push_back(vec[i]);
+// 		}
+// 		else 
+// 		{
+// 			a.push_back(vec[i]);
+// 			b.push_back(vec[i+1]);            
+// 		}
+// 	}
+	
+// 	chains.a = a;
+// 	chains.b = b;
+	
+// 	chains = sortA(chains);
+// 	chains = sortB(chains);
+
+// 	a = chains.a;
+// 	b = chains.b;
+
+// 	std::cout << "is it working" << std::endl;
+
+// }
+
+// Chains PmergeMe::sortA(Chains chains)
+// {
+// 	std::cout << "begin sortA" << std::endl;
+// 	Chains retA;
+// 	Chains retB;
+// 	std::vector<int> a;
+// 	std::vector<int> b;
+
+
+// //	basecase to end recursion and sort Chain A
+// //	if A needs to be swapped B needs to do same to keep pairs
+// 	if (chains.a.size() == 2)
+// 	{
+// 		comparisonCount++;
+// 		if (chains.a[0] < chains.a[1])
+// 		{
+// 			return chains;
+// 		}
+// 		if (chains.a[0] > chains.a[1])
+// 		{
+// 			std::swap(chains.a[0], chains.a[1]);
+// 			std::swap(chains.b[0], chains.b[1]);
+			
+// 			return chains;
+// 		}
+// 	}
+
+
+// //	split chain in A and B again
+// 	for (size_t i = 0; i < chains.a.size() - 1; i += 2)
+// 	{
+// 		comparisonCount++;
+// 		if (chains.a[i] < chains.a[i+1])
+// 		{
+// 			a.push_back(chains.a[i+1]);
+// 			b.push_back(chains.a[i]);
+// 		}
+// 		else 
+// 		{
+// 			a.push_back(chains.a[i]);
+// 			b.push_back(chains.a[i+1]);            
+// 		}
+// 	}
+	
+	
+// 	chains.a = a;
+// 	chains.b = b;
+// 	chains = sortA(chains);
+
+// 	return chains;
+// }
+
+// void PmergeMe::doVecInsertion(Chains chains)
+// {
+// 	std::vector<int> a = chains.a;
+// 	std::vector<int> b = chains.b;
+// 	int elementsToInsert = b.size();
+// 	int elementsInserted = 0;
+// 	int nJacNb = 1;
+// 	size_t JacNb;
+// 	size_t lastJacNb = 1;
+
+
+// 	std::cout << "a: " << std::endl;
+// 	printVecDebug(a);
+// 	std::cout << std::endl << "b: " << std::endl;
+// 	printVecDebug(b);
+
+// 	a.insert(a.begin(), b[0]);
+// 	elementsInserted++;
+// 	elementsToInsert--;
+
+// 	// for (; elementsToInsert > 0; nJacNb++)
+// 	// {
+// 	// 	JacNb = _jacobsNb[nJacNb];
+// 	// 	for ()
+// 	// }
+	
+// }
+
+// Chains PmergeMe::sortB(Chains chains)
+// {
+// 	Chains retB;
+// 	std::vector<int> a;
+// 	std::vector<int> b;
+
+// 	if (chains.b.size() == 2)
+// 	{
+// 		return chains;
+// 	}
+	
+// //	split chain in A and B again
+// 	for (size_t i = 0; i < chains.b.size() - 1; i += 2)
+// 	{
+// 		comparisonCount++;
+// 		if (chains.b[i] < chains.b[i+1])
+// 		{
+// 			a.push_back(chains.b[i+1]);
+// 			b.push_back(chains.b[i]);
+// 		}
+// 		else 
+// 		{
+// 			a.push_back(chains.b[i]);
+// 			b.push_back(chains.b[i+1]);            
+// 		}
+// 	}
+
+// 	chains.a = a;
+// 	chains.b = b;
+	
+// 	retB = sortB(chains);
+// 	chains.a = retB.a;
+// 	chains.b = retB.b;
+
+// 	return chains;
+// }
 
 
 // std::vector<int> PmergeMe::sortVec(std::vector<int> prevA, std::vector<int> prevB, int oddElement, char mode)

@@ -35,7 +35,7 @@ re:				fclean all
 
 N = 500
 test:			all
-					./$(NAME) `shuf -i 1-10 -n $(N) | tr "\n" " "`
+					./$(NAME) `shuf -i 1-10000 -n $(N) | tr "\n" " "`
 
 valgrindtest:	all
 					valgrind ./$(NAME) `shuf -i 1-10000 -n $(N) | tr "\n" " "`

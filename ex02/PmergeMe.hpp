@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:33 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/25 17:30:50 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:54:01 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ struct Chains
 {
 	std::vector<int> a;
 	std::vector<int> b;
-	int oddElement;
+	std::vector<int> n;
 };
 
 class PmergeMe
@@ -37,6 +37,10 @@ class PmergeMe
 		static void printBefore(std::vector<int> before);
 		static void printAfter(std::vector<int> vec, std::deque<int> que);
 		static void printTimes(double vecTime, double queTime, int n);
+
+		static Chains sortVec(Chains chains, char mode);
+
+		
 		
 		static void prepareVec(std::vector<int> vec);
 		static Chains sortA(Chains chains);
