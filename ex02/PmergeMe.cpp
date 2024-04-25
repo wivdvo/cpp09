@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/24 17:38:55 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/25 15:03:00 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& other)
 
 PmergeMe::~PmergeMe() {}
 
+
 std::vector<int> PmergeMe::_vec;
 std::deque<int> PmergeMe::_que;
 const size_t PmergeMe::_jacobsNb[] = {
@@ -46,6 +47,12 @@ const size_t PmergeMe::_jacobsNb[] = {
     357913941, 715827883, 1431655765, 2863311531, 5726623061, 11453246123, 22906492245, 45812984491, 
     91625968981, 183251937963
 };
+int PmergeMe::comparisonCount = 0;
+
+bool PmergeMe::Compare::operator()(int a, int b) {
+	++comparisonCount;
+	return a < b;
+}
 
 void PmergeMe::doMerge(int ac, char** av)
 {
@@ -89,6 +96,7 @@ void PmergeMe::doMerge(int ac, char** av)
 	//std::cout << std::endl << "Finale que:" << std::endl;
 	//printQueDebug(resQue);
 
+	std::cout << "Comparions " << comparisonCount << std::endl;
 	checkVec(resVec);
 	//checkQue(resQue);
 }
@@ -105,15 +113,19 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 			ret.push_back(vec[0]);	
 		}	
 		else if (vec[0] < vec[1])
-		{
+		{	
+			comparisonCount++;
 			ret.push_back(vec[0]);
 			ret.push_back(vec[1]);
 		}
 		else
 		{
+			comparisonCount++;
 			ret.push_back(vec[1]);
 			ret.push_back(vec[0]);
 		}
+		std::cout << "ret: " << std::endl;
+		printVecDebug(ret);
 		return ret;
 	}
 
@@ -136,6 +148,7 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 
 	for (size_t i = 0; i < vec.size() - 1; i += 2)
 	{
+		comparisonCount++;
 		if (vec[i] < vec[i+1])
 		{
 			a.push_back(vec[i+1]);
@@ -148,15 +161,25 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 		}
 	}
 	
+	std::cout << "a: " << std::endl;
+	printVecDebug(a);
+	std::cout << std::endl << "b: " << std::endl;
+	printVecDebug(b);
 	
 	//split recursivly
 	a = sortVec(a);
 	b = sortVec(b);
 
 
+	std::cout << "Insert begins" << std::endl;
+
+
 	//do insertion	
 	//b1 goes in front of a1
 	a.insert(a.begin(), b[0]);
+
+	std::cout << "a: " << std::endl;
+	printVecDebug(a);
 
 
 	//set values that are needed for the insertion
@@ -187,9 +210,9 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 				if (j > b.size() - 1)
 					j = b.size() - 1;
 				if (it != a.end())
-					it = std::upper_bound(a.begin(), it, b[j]);
+					it = std::upper_bound(a.begin(), it, b[j], Compare());
 				else
-					it = std::upper_bound(a.begin(), a.end(), b[j]);
+					it = std::upper_bound(a.begin(), a.end(), b[j], Compare());
 				a.insert(it, b[j]);
 				std::cout << "Element: " << b[j] << std::endl;
 				printVecDebug(a);
@@ -203,7 +226,7 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	{
 		while (elementsToInsert > 0)
 		{
-			it = std::upper_bound(a.begin(), a.end(), b[elementsToInsert]);
+			it = std::upper_bound(a.begin(), a.end(), b[elementsToInsert], Compare());
 			a.insert(it, b[elementsToInsert]);
 			elementsInserted++;
 			elementsToInsert--;
@@ -214,7 +237,7 @@ std::vector<int> PmergeMe::sortVec(std::vector<int> vec)
 	//if there was odd amount of elements insert it in A
 	if (hadOdd)
 	{
-		it = std::upper_bound(a.begin(), a.end(), oddElement);
+		it = std::upper_bound(a.begin(), a.end(), oddElement, Compare());
 		a.insert(it, oddElement);
 	}
 
@@ -344,7 +367,7 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 
 void PmergeMe::printVecDebug(std::vector<int> vec)
 {
-	std::cout << "a: " << std::endl;
+	//std::cout << "a: " << std::endl;
 	for (size_t i = 0; i < vec.size(); i++)
 	{
 		std::cout << i + 1 << ": "<< vec[i] << std::endl;
