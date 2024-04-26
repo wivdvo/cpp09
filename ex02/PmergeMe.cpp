@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/25 20:12:40 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/26 10:51:13 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	if (elementsToInsert > 2)
 	{
-
+		
 	}
 	else {
 		for(; elementsToInsert > 0; elementsToInsert--, elementsInserted++)
