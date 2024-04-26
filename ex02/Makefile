@@ -37,6 +37,12 @@ N = 500
 test:			all
 					./$(NAME) `shuf -i 1-10000 -n $(N) | tr "\n" " "`
 
+test5:			all
+					./$(NAME) `shuf -i 1-5 -n 5 | tr "\n" " "`
+
+test10:			all
+					./$(NAME) `shuf -i 1-10 -n 10 | tr "\n" " "`
+
 valgrindtest:	all
 					valgrind ./$(NAME) `shuf -i 1-10000 -n $(N) | tr "\n" " "`
 

@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/26 10:51:13 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/26 12:17:27 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,11 +287,14 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	if (elementsToInsert > 2)
 	{
+		std::cout << "in if" << std::endl;
 		for (; elementsToInsert > 0;)
 		{
+			std::cout << "in first loop" << std::endl;
 			jacNb = _jacobsNb[nJacNb];
 			for (int i = jacNb - 1; i > lastJacNb - 1; i++)
 			{
+				std::cout << "elements: " << b[i] << std::endl;
 				a.insert(std::upper_bound(a.begin(), a.begin() + elementsInserted + i, b[i], Compare()), b[i]);
 				elementsInserted++;
 				elementsToInsert--;
@@ -302,6 +305,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 	else {
 		for(; elementsToInsert > 0; elementsToInsert--, elementsInserted++)
 		{
+			std::cout << "in else loop" << std::endl;
 			a.insert(std::upper_bound(a.begin(), a.end(), b[elementsToInsert], Compare()), b[elementsToInsert]);
 		}
 	}
