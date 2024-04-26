@@ -42,9 +42,9 @@ PmergeMe::~PmergeMe() {}
 std::vector<int> PmergeMe::_vec;
 std::deque<int> PmergeMe::_que;
 const size_t PmergeMe::_jacobsNb[] = {
-    1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 
-    349525, 699051, 1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971, 
-    357913941, 715827883, 1431655765, 2863311531, 5726623061, 11453246123, 22906492245, 45812984491, 
+    1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763,
+    349525, 699051, 1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971,
+    357913941, 715827883, 1431655765, 2863311531, 5726623061, 11453246123, 22906492245, 45812984491,
     91625968981, 183251937963
 };
 int PmergeMe::comparisonCount = 0;
@@ -74,11 +74,11 @@ void PmergeMe::doMerge(int ac, char** av)
 	std::cout << "final" << std::endl;
 	printVecDebug(chains.a);
 
-	
+
 	clock_t end = clock();
 	double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
-	
+
 	//fill deque
 	start = clock();
 	for (int i = 1; i < ac; i++)
@@ -92,7 +92,7 @@ void PmergeMe::doMerge(int ac, char** av)
 	end = clock();
 	double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
-	
+
 	printBefore(_vec);
 	printAfter(resVec, resQue);
 	std::cout << std::endl;
@@ -134,16 +134,16 @@ void PmergeMe::doMerge(int ac, char** av)
 // 			a.push_back(vec[i+1]);
 // 			b.push_back(vec[i]);
 // 		}
-// 		else 
+// 		else
 // 		{
 // 			a.push_back(vec[i]);
-// 			b.push_back(vec[i+1]);            
+// 			b.push_back(vec[i+1]);
 // 		}
 // 	}
-	
+
 // 	chains.a = a;
 // 	chains.b = b;
-	
+
 // 	chains = sortVec(chains, 'a', oddElement);
 // }
 
@@ -159,7 +159,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 	Chains retA;
 	Chains retB;
 	int oddElement = -1;
-	
+
 	//check if there is an odd amount of elements
 	//if so safe it to add it to A in the very end
 
@@ -169,7 +169,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 		{
 			oddElement = chains.n[chains.n.size() - 1];
 			chains.n.pop_back();
-		}	
+		}
 	}
 	if (mode == 'a')
 	{
@@ -177,7 +177,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 		{
 			oddElement = chains.a[chains.a.size() - 1];
 			chains.a.pop_back();
-		}	
+		}
 	}
 	if (mode == 'b')
 	{
@@ -188,18 +188,19 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 		}
 	}
 
-	
+
 	if (mode == 'a' && chains.a.size() == 2)
 	{
+		comparisonCount++;
 		if (chains.a[0] < chains.a[1])
 		{
-			return chains;	
+			return chains;
 		}
 		else
 		{
 			std::swap(chains.a[0], chains.a[1]);
 			std::swap(chains.b[0], chains.b[1]);
-			return chains;	
+			return chains;
 		}
 	}
 	if (mode == 'b' && chains.b.size() == 2)
@@ -209,21 +210,23 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	for (size_t i = 0; mode == 'n' && i < chains.n.size() - 1; i += 2)
 	{
+		comparisonCount++;
 		if (chains.n[i] < chains.n[i+1])
 		{
 			a.push_back(chains.n[i+1]);
 			b.push_back(chains.n[i]);
 		}
-		else 
+		else
 		{
 			a.push_back(chains.n[i]);
-			b.push_back(chains.n[i+1]);            
-		}		
+			b.push_back(chains.n[i+1]);
+		}
 	}
-	
+
 //	split chain in A and B again
 	for (size_t i = 0; (mode == 'a' || mode == 'b') && i < chains.a.size() - 1; i += 2)
 	{
+		comparisonCount++;
 		if (mode == 'a')
 		{
 			if (chains.a[i] < chains.a[i+1])
@@ -231,10 +234,10 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 				a.push_back(chains.a[i+1]);
 				b.push_back(chains.a[i]);
 			}
-			else 
+			else
 			{
 				a.push_back(chains.a[i]);
-				b.push_back(chains.a[i+1]);            
+				b.push_back(chains.a[i+1]);
 			}
 		}
 		if (mode == 'b')
@@ -244,10 +247,10 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 				a.push_back(chains.b[i+1]);
 				b.push_back(chains.b[i]);
 			}
-			else 
+			else
 			{
 				a.push_back(chains.b[i]);
-				b.push_back(chains.b[i+1]);            
+				b.push_back(chains.b[i+1]);
 			}
 		}
 	}
@@ -272,6 +275,11 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	int elementsInserted = 0;
 	int elementsToInsert = b.size();
+	int nJacNb = 1;
+	size_t jacNb;
+	size_t lastJacNb = 1;
+	//int i = 0;
+
 
 	a.insert(a.begin(), b[0]);
 	elementsInserted++;
@@ -279,12 +287,22 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	if (elementsToInsert > 2)
 	{
-		
+		for (; elementsToInsert > 0;)
+		{
+			jacNb = _jacobsNb[nJacNb];
+			for (int i = jacNb - 1; i > lastJacNb - 1; i++)
+			{
+				a.insert(std::upper_bound(a.begin(), a.begin() + elementsInserted + i, b[i], Compare()), b[i]);
+				elementsInserted++;
+				elementsToInsert--;
+			}
+			lastJacNb = jacNb;
+		}
 	}
 	else {
 		for(; elementsToInsert > 0; elementsToInsert--, elementsInserted++)
 		{
-			a.insert(std::upper_bound(a.begin(), a.end(), b[elementsToInsert]), b[elementsToInsert]);
+			a.insert(std::upper_bound(a.begin(), a.end(), b[elementsToInsert], Compare()), b[elementsToInsert]);
 		}
 	}
 
@@ -301,9 +319,9 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 
 	if (oddElement != -1)
 	{
-		a.insert(std::upper_bound(a.begin(), a.end(), oddElement), oddElement);
+		a.insert(std::upper_bound(a.begin(), a.end(), oddElement, Compare()), oddElement);
 	}
-	
+
 
 	chains.a = a;
 
@@ -345,16 +363,16 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 			a.push_back(vec[i+1]);
 // 			b.push_back(vec[i]);
 // 		}
-// 		else 
+// 		else
 // 		{
 // 			a.push_back(vec[i]);
-// 			b.push_back(vec[i+1]);            
+// 			b.push_back(vec[i+1]);
 // 		}
 // 	}
-	
+
 // 	chains.a = a;
 // 	chains.b = b;
-	
+
 // 	chains = sortA(chains);
 // 	chains = sortB(chains);
 
@@ -387,7 +405,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 		{
 // 			std::swap(chains.a[0], chains.a[1]);
 // 			std::swap(chains.b[0], chains.b[1]);
-			
+
 // 			return chains;
 // 		}
 // 	}
@@ -402,14 +420,14 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 			a.push_back(chains.a[i+1]);
 // 			b.push_back(chains.a[i]);
 // 		}
-// 		else 
+// 		else
 // 		{
 // 			a.push_back(chains.a[i]);
-// 			b.push_back(chains.a[i+1]);            
+// 			b.push_back(chains.a[i+1]);
 // 		}
 // 	}
-	
-	
+
+
 // 	chains.a = a;
 // 	chains.b = b;
 // 	chains = sortA(chains);
@@ -442,7 +460,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 	// 	JacNb = _jacobsNb[nJacNb];
 // 	// 	for ()
 // 	// }
-	
+
 // }
 
 // Chains PmergeMe::sortB(Chains chains)
@@ -455,7 +473,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 	{
 // 		return chains;
 // 	}
-	
+
 // //	split chain in A and B again
 // 	for (size_t i = 0; i < chains.b.size() - 1; i += 2)
 // 	{
@@ -465,16 +483,16 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 			a.push_back(chains.b[i+1]);
 // 			b.push_back(chains.b[i]);
 // 		}
-// 		else 
+// 		else
 // 		{
 // 			a.push_back(chains.b[i]);
-// 			b.push_back(chains.b[i+1]);            
+// 			b.push_back(chains.b[i+1]);
 // 		}
 // 	}
 
 // 	chains.a = a;
 // 	chains.b = b;
-	
+
 // 	retB = sortB(chains);
 // 	chains.a = retB.a;
 // 	chains.b = retB.b;
@@ -500,7 +518,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 		else
 // 		{
 // 			ret.push_back(prevA[1]);
-// 			ret.push_back(prevA[0]);		
+// 			ret.push_back(prevA[0]);
 // 		}
 // 		comparisonCount++;
 // 		return ret;
@@ -522,11 +540,11 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 				a.push_back(prevA[i+1]);
 // 				b.push_back(prevA[i]);
 // 			}
-// 			else 
+// 			else
 // 			{
 // 				a.push_back(prevA[i]);
-// 				b.push_back(prevA[i+1]);            
-// 			}			
+// 				b.push_back(prevA[i+1]);
+// 			}
 // 		}
 // 		if (mode == 'b')
 // 		{
@@ -536,11 +554,11 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 				a.push_back(prevB[i+1]);
 // 				b.push_back(prevB[i]);
 // 			}
-// 			else 
+// 			else
 // 			{
 // 				a.push_back(prevB[i]);
-// 				b.push_back(prevB[i+1]);            
-// 			}			
+// 				b.push_back(prevB[i+1]);
+// 			}
 // 		}
 // 	}
 
@@ -556,10 +574,10 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 		std::vector<int> ret;
 // 		if (vec.size() == 1)
 // 		{
-// 			ret.push_back(vec[0]);	
-// 		}	
+// 			ret.push_back(vec[0]);
+// 		}
 // 		else if (vec[0] < vec[1])
-// 		{	
+// 		{
 // 			comparisonCount++;
 // 			ret.push_back(vec[0]);
 // 			ret.push_back(vec[1]);
@@ -600,18 +618,18 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 			a.push_back(vec[i+1]);
 // 			b.push_back(vec[i]);
 // 		}
-// 		else 
+// 		else
 // 		{
 // 			a.push_back(vec[i]);
-// 			b.push_back(vec[i+1]);            
+// 			b.push_back(vec[i+1]);
 // 		}
 // 	}
-	
+
 // 	std::cout << "a: " << std::endl;
 // 	printVecDebug(a);
 // 	std::cout << std::endl << "b: " << std::endl;
 // 	printVecDebug(b);
-	
+
 // 	//split recursivly
 // 	a = sortVec(a);
 // 	b = sortVec(b);
@@ -620,7 +638,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 	std::cout << "Insert begins" << std::endl;
 
 
-// 	//do insertion	
+// 	//do insertion
 // 	//b1 goes in front of a1
 // 	a.insert(a.begin(), b[0]);
 
@@ -635,14 +653,14 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 	size_t jacNb;
 // 	size_t lastJacobs = 1;
 // 	std::vector<int>::iterator it;
-	
+
 // 	std::cout << "a: " << std::endl;
 // 	printVecDebug(a);
 // 	std::cout << "b: " << std::endl;
 
 // 	printVecDebug(b);
 
-	
+
 // 	//insert from current JacNb to last JacNb
 // 	//repeat until all of b was inserted
 // 	if (elementsToInsert > 3)
@@ -678,7 +696,7 @@ Chains PmergeMe::sortVec(Chains chains, char mode)
 // 			elementsToInsert--;
 // 		}
 // 	}
-	
+
 
 // 	//if there was odd amount of elements insert it in A
 // 	if (hadOdd)
@@ -698,8 +716,8 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 		std::deque<int> ret;
 		if (que.size() == 1)
 		{
-			ret.push_back(que[0]);	
-		}	
+			ret.push_back(que[0]);
+		}
 		else if (que[0] < que[1])
 		{
 			ret.push_back(que[0]);
@@ -737,20 +755,20 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 			a.push_back(que[i+1]);
 			b.push_back(que[i]);
 		}
-		else 
+		else
 		{
 			a.push_back(que[i]);
-			b.push_back(que[i+1]);            
+			b.push_back(que[i+1]);
 		}
 	}
-	
-	
+
+
 	//split recursivly
 	a = sortQue(a);
 	b = sortQue(b);
 
 
-	//do insertion	
+	//do insertion
 	//b1 goes in front of a1
 	a.insert(a.begin(), b[0]);
 
@@ -762,8 +780,8 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 	size_t jacNb;
 	size_t lastJacobs = 1;
 	std::deque<int>::iterator it;
-	
-	
+
+
 	//insert from current JacNb to last JacNb
 	//repeat until all of b was inserted
 	if (elementsToInsert > 3)
@@ -798,7 +816,7 @@ std::deque<int> PmergeMe::sortQue(std::deque<int> que)
 			elementsToInsert--;
 		}
 	}
-	
+
 
 	//if there was odd amount of elements insert it in A
 	if (hadOdd)
@@ -929,7 +947,7 @@ void PmergeMe::checkVec(std::vector<int> res)
 		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
 		throw std::runtime_error("Lost elements");
 	}
-	
+
 	for (size_t i = 1; i < res.size(); i++)
 	{
 		if (res[i-1] > res[i])
@@ -949,7 +967,7 @@ void PmergeMe::checkQue(std::deque<int> res)
 		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
 		throw std::runtime_error("Lost elements");
 	}
-	
+
 	for (size_t i = 1; i < res.size(); i++)
 	{
 		if (res[i-1] > res[i])
@@ -961,5 +979,3 @@ void PmergeMe::checkQue(std::deque<int> res)
 
 	std::cout << "sorting deque:  SUCCESS" << std::endl;
 }
-
-
