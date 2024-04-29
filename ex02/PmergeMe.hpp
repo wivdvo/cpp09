@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:33 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/29 17:17:03 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:52:46 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class PmergeMe
 		static void insertB(Chains chains);
 		static int findPair(std::vector<int> vec, std::vector<int> toFindVec, int toFindIndex);
 		static void sort3orLess(Chains chains);
+		static std::vector<int> getOrder(int amount);
 
 		
 		

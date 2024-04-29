@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/29 17:45:40 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:10:05 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <exception>
 #include <stdexcept>
 #include <sstream>
+#include <utility>
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -70,6 +71,8 @@ void PmergeMe::doMerge(int ac, char** av)
 	//sorting the vector
 	std::vector<int> resVec;
 
+	//getOrder(30);
+
 	sortVec(_vec);
 
 	std::cout << "final" << std::endl;
@@ -106,7 +109,7 @@ void PmergeMe::doMerge(int ac, char** av)
 	//printQueDebug(resQue);
 
 	std::cout << "Comparions " << comparisonCount << std::endl;
-	checkVec(resVec);
+	checkVec(_res);
 	//checkQue(resQue);
 }
 
@@ -170,7 +173,7 @@ void PmergeMe::sortVec(std::vector<int> vec)
 	insertB(chains);
 }
 
-std::vector<int> getOrder(int amount)
+std::vector<int> PmergeMe::getOrder(int amount)
 {
 	std::vector<int> order;
 	if (amount == 3)
@@ -189,8 +192,32 @@ std::vector<int> getOrder(int amount)
 	if (amount == 1)
 	{
 		order.push_back(1);
+		return order;
 	}
-	
+
+	size_t lastJacNb = 0;
+	size_t nJacNb = 0;
+	size_t jacNb;
+	size_t ogAmount = amount;
+
+	while (amount > 0)
+	{
+		jacNb = _jacobsNb[nJacNb];
+		if (jacNb > ogAmount)
+			jacNb = ogAmount;
+		size_t temp = jacNb;
+		while (temp > lastJacNb && amount > 0)
+		{
+			//std::cout << "temp: " << temp << " amount: " << amount << std::endl;
+			order.push_back(temp);
+			temp--;
+			amount--;
+		}
+		lastJacNb = jacNb;
+		nJacNb++;
+	}
+
+	return order;
 }
 
 void PmergeMe::sort3orLess(Chains chains)
@@ -206,7 +233,6 @@ void PmergeMe::sort3orLess(Chains chains)
 //	b1 in front of a1
 //	has to be Pair of res[0]
 	element = chains.b[findPair(chains.a, _res, 0)];
-	std::cout << "toInsert: " << toInsert << " Element: " << element << " endIndex: " << endIndex << std::endl;
 	_res.insert(_res.begin(), element);
 	toInsert--;
 	orderIndex++;
@@ -216,25 +242,28 @@ void PmergeMe::sort3orLess(Chains chains)
 	for (; toInsert > 0; toInsert--, orderIndex++)
 	{
 		//check if element has patner
-		std::cout << "order: " << order[orderIndex] << std::endl;
-		if (order[orderIndex] >= _ogA.size())
+		if (order[orderIndex] <= _ogA.size())
 		{
-			std::cout << "in if" << std::endl;
-			//endIndex is infront of partner
-			element = chains.b[findPair(chains.a, _res, toInsert)];
-			endIndex = findPair(chains.a, _res, toInsert);
-			std::cout << "if  toInsert: " << toInsert << " Element: " << element << " endIndex: " << endIndex << std::endl;
-			//insert
+			element = chains.b[findPair(chains.a, _ogA, order[orderIndex]-1)];
+			endIndex = findPair(_res, _ogA, order[orderIndex]-1);
+			it = std::upper_bound(_res.begin(), _res.begin()+endIndex, element, Compare());
+			_res.insert(it, element);
 		}
 		else
 		{
 			element = chains.b[chains.b.size()-1];
-			it = std::upper_bound(_res.begin(), _res.end(), element);
-			std::cout << "else  toInsert: " << toInsert << " Element: " << element << " endIndex: " << endIndex << std::endl;
+			it = std::upper_bound(_res.begin(), _res.end(), element, Compare());
 			_res.insert(it, element);
 		}
 	}
 }
+
+// int PmergeMe::calcOffset(size_t size, int toInsert, int endIndex)
+// {
+// 	int inserted = size - toInsert;
+
+// 	return endIndex + inserted;
+// }
 
 void PmergeMe::insertB(Chains chains)
 {
@@ -251,8 +280,8 @@ void PmergeMe::insertB(Chains chains)
 	_ogA = _res;
 
 
-	if (chains.b.size() <= 3)
-		sort3orLess(chains);
+	//if (chains.b.size() <= 3)
+	sort3orLess(chains);
 
 	// std::cout << "element " << chains.b[findPair(chains.a, _res[0], 0)] << std::endl;
 	// _res.insert(_res.begin(), chains.b[findPair(chains.a, chains.a[0], 0)]);
