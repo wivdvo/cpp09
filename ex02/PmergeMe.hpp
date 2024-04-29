@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:33 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/29 12:04:34 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:17:03 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ struct Chains
 {
 	std::vector<int> a;
 	std::vector<int> b;
-	std::vector<int> n;
 };
 
 class PmergeMe
@@ -39,6 +38,10 @@ class PmergeMe
 		static void printTimes(double vecTime, double queTime, int n);
 
 		static void sortVec(std::vector<int> vec);
+		static void setCurrentIndex(size_t jacNb, size_t size, size_t& currIndex);
+		static void insertB(Chains chains);
+		static int findPair(std::vector<int> vec, std::vector<int> toFindVec, int toFindIndex);
+		static void sort3orLess(Chains chains);
 
 		
 		
@@ -47,7 +50,6 @@ class PmergeMe
 
 
 
-		static std::vector<int> sortVec(std::vector<int> a, std::vector<int> b, int oddElement, char mode);
 		static void printVec(std::vector<int> vec);
 		static void checkVec(std::vector<int> vec);
 		static void printVecDebug(std::vector<int> vec);
@@ -58,6 +60,8 @@ class PmergeMe
 		static void printQueDebug(std::deque<int> que);
 		
 		static std::vector<int> _vec;
+		static std::vector<int> _res;
+		static std::vector<int> _ogA;
 		static std::deque<int> _que;
 		static const size_t _jacobsNb[];
 		static int comparisonCount;
