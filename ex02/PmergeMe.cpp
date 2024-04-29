@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/29 19:10:05 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:13:33 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void PmergeMe::sortVec(std::vector<int> vec)
 	if (oddElement != -1)
 	{
 		chains.b.push_back(oddElement);
-		chains.a.push_back(-1);
+		//chains.a.push_back(-1);
 	}
 	sortVec(chains.a);
 	
