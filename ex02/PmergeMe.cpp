@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/29 19:13:33 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:22:51 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,43 +79,44 @@ void PmergeMe::doMerge(int ac, char** av)
 	printVecDebug(_res);
 
 
-	clock_t end = clock();
-	double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
+	// clock_t end = clock();
+	// double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
 
-	//fill deque
-	start = clock();
-	for (int i = 1; i < ac; i++)
-	{
-		temp = checkNb(av[i]);
-		_que.push_back(temp);
-	}
-	//sotring the deque
-	std::deque<int> resQue;
-	resQue = sortQue(_que);
-	end = clock();
-	double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
+	// //fill deque
+	// start = clock();
+	// for (int i = 1; i < ac; i++)
+	// {
+	// 	temp = checkNb(av[i]);
+	// 	_que.push_back(temp);
+	// }
+	// //sotring the deque
+	// std::deque<int> resQue;
+	// resQue = sortQue(_que);
+	// end = clock();
+	// double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
 
-	printBefore(_vec);
-	printAfter(resVec, resQue);
-	std::cout << std::endl;
-	printTimes(vecTime, queTime, _vec.size());
-	std::cout << std::endl;
+	// printBefore(_vec);
+	// printAfter(resVec, resQue);
+	// std::cout << std::endl;
+	// printTimes(vecTime, queTime, _vec.size());
+	// std::cout << std::endl;
 
-	std::cout << "Finale Vec:" << std::endl;
-	printVecDebug(resVec);
-	//std::cout << std::endl << "Finale que:" << std::endl;
-	//printQueDebug(resQue);
+	// std::cout << "Finale Vec:" << std::endl;
+	// printVecDebug(resVec);
+	// //std::cout << std::endl << "Finale que:" << std::endl;
+	// //printQueDebug(resQue);
 
-	std::cout << "Comparions " << comparisonCount << std::endl;
+	// std::cout << "Comparions " << comparisonCount << std::endl;
 	checkVec(_res);
+	
+	
 	//checkQue(resQue);
 }
 
 void PmergeMe::sortVec(std::vector<int> vec)
 {
-	std::cout << "begin" << std::endl;
 	Chains chains;
 	int oddElement = -1;
 
@@ -130,6 +131,7 @@ void PmergeMe::sortVec(std::vector<int> vec)
 //	create pairs out of input vector
 	for (size_t i = 0; i < vec.size() - 1; i+=2)
 	{
+		comparisonCount++;
 		if (vec[i] < vec[i+1])
 		{
 			chains.a.push_back(vec[i+1]);
@@ -145,12 +147,11 @@ void PmergeMe::sortVec(std::vector<int> vec)
 //	basecase	
 	if (vec.size() < 3)
 	{
-		std::cout << "basecase" << std::endl;
 		_res.push_back(chains.b[0]);
 		_res.push_back(chains.a[0]);
 
 		if (oddElement != -1)
-			_res.insert(std::upper_bound(_res.begin(), _res.end(), oddElement), oddElement);
+			_res.insert(std::upper_bound(_res.begin(), _res.end(), oddElement, Compare()), oddElement);
 		return;
 	}
 
@@ -161,14 +162,15 @@ void PmergeMe::sortVec(std::vector<int> vec)
 		chains.b.push_back(oddElement);
 		//chains.a.push_back(-1);
 	}
+	
 	sortVec(chains.a);
 	
-	std::cout << "a: " << std::endl;
-	printVecDebug(chains.a);
-	std::cout << "b: " << std::endl;
-	printVecDebug(chains.b);
-	std::cout << "res: " << std::endl;
-	printVecDebug(_res);
+	// std::cout << "a: " << std::endl;
+	// printVecDebug(chains.a);
+	// std::cout << "b: " << std::endl;
+	// printVecDebug(chains.b);
+	// std::cout << "res: " << std::endl;
+	// printVecDebug(_res);
 
 	insertB(chains);
 }
@@ -220,7 +222,7 @@ std::vector<int> PmergeMe::getOrder(int amount)
 	return order;
 }
 
-void PmergeMe::sort3orLess(Chains chains)
+void PmergeMe::insertB(Chains chains)
 {
 	int element = 0;
 	int toInsert = chains.b.size();
@@ -229,10 +231,17 @@ void PmergeMe::sort3orLess(Chains chains)
 	int orderIndex = 0;
 	std::vector<int>::iterator it;
 
+	std::cout << "a:" << std::endl;
+	printVecDebug(chains.a);
+	std::cout << "b:" << std::endl;
+	printVecDebug(chains.b);
+	
+
 
 //	b1 in front of a1
 //	has to be Pair of res[0]
 	element = chains.b[findPair(chains.a, _res, 0)];
+	std::cout << "Element1: " << element << std::endl;
 	_res.insert(_res.begin(), element);
 	toInsert--;
 	orderIndex++;
@@ -245,6 +254,7 @@ void PmergeMe::sort3orLess(Chains chains)
 		if (order[orderIndex] <= _ogA.size())
 		{
 			element = chains.b[findPair(chains.a, _ogA, order[orderIndex]-1)];
+			std::cout << "Element2: " << element << std::endl;
 			endIndex = findPair(_res, _ogA, order[orderIndex]-1);
 			it = std::upper_bound(_res.begin(), _res.begin()+endIndex, element, Compare());
 			_res.insert(it, element);
@@ -252,6 +262,7 @@ void PmergeMe::sort3orLess(Chains chains)
 		else
 		{
 			element = chains.b[chains.b.size()-1];
+			std::cout << "Element3: " << element << std::endl;
 			it = std::upper_bound(_res.begin(), _res.end(), element, Compare());
 			_res.insert(it, element);
 		}
@@ -261,71 +272,65 @@ void PmergeMe::sort3orLess(Chains chains)
 // int PmergeMe::calcOffset(size_t size, int toInsert, int endIndex)
 // {
 // 	int inserted = size - toInsert;
-
 // 	return endIndex + inserted;
 // }
-
-void PmergeMe::insertB(Chains chains)
-{
-	int elementsToInsert = chains.b.size();
-	int nJacNb = 1;
-	size_t jacNb;
-	size_t lastJacobs = 1;
-	size_t currIndex;
-	size_t lastIndex;
-	int element;
-	std::vector<int>::iterator it;
-	int endOffset;
-
-	_ogA = _res;
-
-
-	//if (chains.b.size() <= 3)
-	sort3orLess(chains);
-
-	// std::cout << "element " << chains.b[findPair(chains.a, _res[0], 0)] << std::endl;
-	// _res.insert(_res.begin(), chains.b[findPair(chains.a, chains.a[0], 0)]);
-	// elementsToInsert--;
-	// // std::cout << "before loops" << std::endl;
-	// // printVecDebug(_res);
-	// if (elementsToInsert < 3)
-	// {
-	// 	std::cout << "IF" << std::endl;
-	// 	currIndex = 3;
-	// 	for (; elementsToInsert > 0; elementsToInsert--)
-	// 	{
-	// 		//case were b3 does not have patner
-	// 		if (_res.size() < currIndex)
-	// 		{
-	// 			element = chains.b[currIndex-1];
-	// 		}
-	// 		else {
-	// 			element = chains.b[findPair(chains.a, chains.a[elementsToInsert], elementsToInsert)];
-	// 		}
-	// 		endOffset = findPair(_res, chains.a[elementsToInsert], elementsToInsert);
-	// 		it = std::upper_bound(_res.begin(), _res.begin() + endOffset, element, Compare());
-	// 		std::cout << "element: " << element<< " elementsToInsert: " << elementsToInsert << " end offset: " << endOffset << std::endl;
-	// 		printVecDebug(_res);
-	// 		_res.insert(it, element);
-	// 	}
-	// }
-	// else
-	// {
-	// 	std::cout << "ELSE" << std::endl;
-	// 	for (; elementsToInsert > 0; nJacNb++)
-	// 	{
-	// 		jacNb = _jacobsNb[nJacNb];
-	// 		lastIndex = lastJacobs - 1;
-	// 		setCurrentIndex(jacNb, chains.b.size(), currIndex);
-	// 		for (;currIndex > lastIndex && elementsToInsert > 0; currIndex--, elementsToInsert--)
-	// 		{
-	// 			element = chains.b[currIndex];
-	// 			_res.insert(std::upper_bound(_res.begin(), _res.end(), element, Compare()), element);
-	// 		}
-	// 		lastJacobs = jacNb;
-	// 	}
-	// }
-}
+// void PmergeMe::insertB(Chains chains)
+// {
+// 	int elementsToInsert = chains.b.size();
+// 	int nJacNb = 1;
+// 	size_t jacNb;
+// 	size_t lastJacobs = 1;
+// 	size_t currIndex;
+// 	size_t lastIndex;
+// 	int element;
+// 	std::vector<int>::iterator it;
+// 	int endOffset;
+// 	_ogA = _res;
+// 	//if (chains.b.size() <= 3)
+// 	sort3orLess(chains);
+// 	// std::cout << "element " << chains.b[findPair(chains.a, _res[0], 0)] << std::endl;
+// 	// _res.insert(_res.begin(), chains.b[findPair(chains.a, chains.a[0], 0)]);
+// 	// elementsToInsert--;
+// 	// // std::cout << "before loops" << std::endl;
+// 	// // printVecDebug(_res);
+// 	// if (elementsToInsert < 3)
+// 	// {
+// 	// 	std::cout << "IF" << std::endl;
+// 	// 	currIndex = 3;
+// 	// 	for (; elementsToInsert > 0; elementsToInsert--)
+// 	// 	{
+// 	// 		//case were b3 does not have patner
+// 	// 		if (_res.size() < currIndex)
+// 	// 		{
+// 	// 			element = chains.b[currIndex-1];
+// 	// 		}
+// 	// 		else {
+// 	// 			element = chains.b[findPair(chains.a, chains.a[elementsToInsert], elementsToInsert)];
+// 	// 		}
+// 	// 		endOffset = findPair(_res, chains.a[elementsToInsert], elementsToInsert);
+// 	// 		it = std::upper_bound(_res.begin(), _res.begin() + endOffset, element, Compare());
+// 	// 		std::cout << "element: " << element<< " elementsToInsert: " << elementsToInsert << " end offset: " << endOffset << std::endl;
+// 	// 		printVecDebug(_res);
+// 	// 		_res.insert(it, element);
+// 	// 	}
+// 	// }
+// 	// else
+// 	// {
+// 	// 	std::cout << "ELSE" << std::endl;
+// 	// 	for (; elementsToInsert > 0; nJacNb++)
+// 	// 	{
+// 	// 		jacNb = _jacobsNb[nJacNb];
+// 	// 		lastIndex = lastJacobs - 1;
+// 	// 		setCurrentIndex(jacNb, chains.b.size(), currIndex);
+// 	// 		for (;currIndex > lastIndex && elementsToInsert > 0; currIndex--, elementsToInsert--)
+// 	// 		{
+// 	// 			element = chains.b[currIndex];
+// 	// 			_res.insert(std::upper_bound(_res.begin(), _res.end(), element, Compare()), element);
+// 	// 		}
+// 	// 		lastJacobs = jacNb;
+// 	// 	}
+// 	// }
+// }
 
 int PmergeMe::findPair(std::vector<int> vec, std::vector<int> toFindVec, int toFindIndex)
 {
@@ -333,18 +338,18 @@ int PmergeMe::findPair(std::vector<int> vec, std::vector<int> toFindVec, int toF
 	
 	if (toFind == -1)
 	{
-		std::cout << "to find is -1" << std::endl;
+		//std::cout << "to find is -1" << std::endl;
 		return toFindIndex;
 	}
 	for (size_t i = 0; i < vec.size(); i++)
 	{
 		if (vec[i] == toFind)
 		{
-			std::cout << "to find: " << toFind << " pair index: " << i << std::endl;
+			//std::cout << "to find: " << toFind << " pair index: " << i << std::endl;
 			return i;
 		}
 	}
-	std::cout << "could not find pair" << std::endl;
+	//std::cout << "could not find pair" << std::endl;
 	return -1;
 }
 
@@ -604,6 +609,7 @@ void PmergeMe::printTimes(double vecTime, double queTime, int n)
 
 void PmergeMe::checkVec(std::vector<int> res)
 {
+	std::cout << "comparisons: " << comparisonCount << std::endl;
 	if (res.size() != _vec.size())
 	{
 		std::cout << "res: " << res.size() << " og: " << _vec.size() << std::endl;
