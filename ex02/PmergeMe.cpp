@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/30 12:22:51 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/04/30 14:12:00 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,7 @@ void PmergeMe::insertB(Chains chains)
 	std::vector<int> order = getOrder(chains.b.size());
 	int orderIndex = 0;
 	std::vector<int>::iterator it;
+	_ogA = _res;
 
 	std::cout << "a:" << std::endl;
 	printVecDebug(chains.a);
@@ -251,6 +252,7 @@ void PmergeMe::insertB(Chains chains)
 	for (; toInsert > 0; toInsert--, orderIndex++)
 	{
 		//check if element has patner
+		std::cout << "order: " << order[orderIndex] << " ogA size: " << _ogA.size() << std::endl;
 		if (order[orderIndex] <= _ogA.size())
 		{
 			element = chains.b[findPair(chains.a, _ogA, order[orderIndex]-1)];
@@ -364,14 +366,7 @@ void PmergeMe::setCurrentIndex(size_t jacNb, size_t size, size_t& currIndex)
 		{
 			currIndex = jacNb - 1;	
 		}
-} 
-
-
-
-
-
-
-
+}
 
 
 
@@ -622,6 +617,15 @@ void PmergeMe::checkVec(std::vector<int> res)
 		{
 			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
 			throw std::runtime_error("Not sorted");
+		}
+	}
+
+	for (size_t i = 1; i < res.size(); i++)
+	{
+		if (res[i-1] == res[i])
+		{
+			std::cout << "i: " << i << " nb: " << res[i] << std::endl;
+			throw std::runtime_error("Dublicate appered");
 		}
 	}
 
