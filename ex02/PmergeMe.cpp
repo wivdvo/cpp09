@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/05/01 13:17:24 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:10:22 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <deque>
-#include <exception>
 #include <stdexcept>
 #include <sstream>
-#include <utility>
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -32,9 +30,8 @@ PmergeMe::PmergeMe(const PmergeMe& other)
 
 PmergeMe& PmergeMe::operator=(const PmergeMe& other)
 {
-	this->_vec = other._vec;
-	this->_que = other._que;
-
+	(void)other;
+	
 	return *this;
 }
 
@@ -75,8 +72,12 @@ void PmergeMe::doMerge(int ac, char** av)
 		temp = checkNb(av[i]);
 		before.push_back(temp);
 	}
+	if (before.size() > 10000)
+		throw std::runtime_error("Max 10000 elements");
+	
 	std::cout << "Before: " << std::endl;
 	printVecDebug(before);
+	
 	
 	checkDublicate(before);
 
@@ -93,6 +94,8 @@ void PmergeMe::doMerge(int ac, char** av)
 	clock_t end = clock();
 	double vecTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
+
+	//reset static var for next sort
 	comparionsVec = comparisonCount;
 	comparisonCount = 0;
 	std::cout << "Final vec:" << std::endl;
@@ -335,7 +338,7 @@ void PmergeMe::insertBVec(Chains chains)
 	for (; toInsert > 0; toInsert--, orderIndex++)
 	{
 //		check if element has patner
-		if (order[orderIndex] <= _ogAVec.size())
+		if (order[orderIndex] <= (int)_ogAVec.size())
 		{
 			element = chains.b[findPairVec(chains.a, _ogAVec, order[orderIndex]-1)];
 			//std::cout << "Element2: " << element << std::endl;
@@ -383,7 +386,7 @@ void PmergeMe::insertBQue(ChainsQ chainsQ)
 	for (; toInsert > 0; toInsert--, orderIndex++)
 	{
 //		check if element has patner
-		if (order[orderIndex] <= _ogAQue.size())
+		if (order[orderIndex] <= (int)_ogAQue.size())
 		{
 			element = chainsQ.b[findPairQue(chainsQ.a, _ogAQue, order[orderIndex]-1)];
 			//std::cout << "Element2: " << element << std::endl;

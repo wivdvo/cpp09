@@ -10,7 +10,7 @@ OBJS =		$(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 
 CXX =		c++
 
-CXXFLAGS =	-g #-Wall -Werror -Wextra -std=c++98 -pedantic
+CXXFLAGS =	-g -Wall -Werror -Wextra -std=c++98 -pedantic
 
 RM =		rm -fr
 
