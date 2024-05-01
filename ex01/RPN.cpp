@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:18 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/23 17:33:50 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/01 13:20:34 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void RPN::div()
 	if (a == 0)
 		throw std::runtime_error("Division by 0 is undifined.");
 	temp = b / a;
-	if (temp >= INT_MAX)
-		throw std::runtime_error("Int overflow");
+	if (temp >= INT_MAX || temp <= INT_MIN)
+		throw std::runtime_error("Overflow");
 	_stack.push(b / a);
 }
 
@@ -115,8 +115,8 @@ void RPN::mult()
 		throw std::runtime_error("Invalid input");
 	}
 	temp = a * b;
-	if (temp >= INT_MAX)
-		throw std::runtime_error("Int overflow");
+	if (temp >= INT_MAX || temp <= INT_MIN)
+		throw std::runtime_error("Overflow");
 	_stack.push(a * b);
 }
 
@@ -142,8 +142,8 @@ void RPN::sub()
 		throw std::runtime_error("Invalid input");
 	}
 	temp = b - a;
-	if (temp >= INT_MAX)
-		throw std::runtime_error("Int overflow");
+	if (temp >= INT_MAX || temp <= INT_MIN)
+		throw std::runtime_error("Overflow");
 	_stack.push(b - a);
 }
 
@@ -169,8 +169,8 @@ void RPN::add()
 		throw std::runtime_error("Invalid input");
 	}
 	temp = a + b;
-	if (temp >= INT_MAX)
-		throw std::runtime_error("Int overflow");
+	if (temp >= INT_MAX || temp <= INT_MIN)
+		throw std::runtime_error("Overflow");
 	_stack.push(a + b);
 }
 

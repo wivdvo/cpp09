@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/30 14:40:05 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/01 13:17:24 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,10 @@ void PmergeMe::doMerge(int ac, char** av)
 		temp = checkNb(av[i]);
 		before.push_back(temp);
 	}
+	std::cout << "Before: " << std::endl;
+	printVecDebug(before);
+	
+	checkDublicate(before);
 
 	//fill vector
 	clock_t start = clock();
@@ -91,7 +95,7 @@ void PmergeMe::doMerge(int ac, char** av)
 
 	comparionsVec = comparisonCount;
 	comparisonCount = 0;
-	std::cout << "final Vec" << std::endl;
+	std::cout << "Final vec:" << std::endl;
 	printVecDebug(_resVec);
 
 	//fill deque
@@ -103,6 +107,7 @@ void PmergeMe::doMerge(int ac, char** av)
 	}
 	//sotring the deque
 	sortQue(_que);
+	
 	end = clock();
 	double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
@@ -247,25 +252,6 @@ void PmergeMe::sortQue(std::deque<int> que)
 std::vector<int> PmergeMe::getOrderVec(int amount)
 {
 	std::vector<int> order;
-	// if (amount == 3)
-	// {
-	// 	order.push_back(1);
-	// 	order.push_back(3);
-	// 	order.push_back(2);
-	// 	return order;
-	// }
-	// if (amount == 2)
-	// {
-	// 	order.push_back(1);
-	// 	order.push_back(2);
-	// 	return order;
-	// }
-	// if (amount == 1)
-	// {
-	// 	order.push_back(1);
-	// 	return order;
-	// }
-
 	size_t lastJacNb = 0;
 	size_t nJacNb = 0;
 	size_t jacNb;
@@ -294,25 +280,6 @@ std::vector<int> PmergeMe::getOrderVec(int amount)
 std::deque<int> PmergeMe::getOrderQue(int amount)
 {
 	std::deque<int> order;
-	// if (amount == 3)
-	// {
-	// 	order.push_back(1);
-	// 	order.push_back(3);
-	// 	order.push_back(2);
-	// 	return order;
-	// }
-	// if (amount == 2)
-	// {
-	// 	order.push_back(1);
-	// 	order.push_back(2);
-	// 	return order;
-	// }
-	// if (amount == 1)
-	// {
-	// 	order.push_back(1);
-	// 	return order;
-	// }
-
 	size_t lastJacNb = 0;
 	size_t nJacNb = 0;
 	size_t jacNb;
@@ -637,4 +604,12 @@ void PmergeMe::checkQue(std::deque<int> res)
 	}
 
 	std::cout << "sorting deque:  SUCCESS" << std::endl;
+}
+
+void PmergeMe::checkDublicate(std::vector<int> input)
+{
+	std::sort(input.begin(), input.end());
+
+	if (std::adjacent_find(input.begin(), input.end()) != input.end())
+		throw std::runtime_error("Dublicate in input");
 }

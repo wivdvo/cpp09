@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:09 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/04/03 18:01:10 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/01 13:19:34 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 {
 	try {
 		if (argc != 2)
-			throw std::runtime_error("Needs 1 argument. (\"1 + 1\")");
+			throw std::runtime_error("Needs 1 argument. e.g:(\"1 1 +\")");
 		if (argv[1] == NULL || argv[1][0] == 0)
 			throw std::runtime_error("Invalid argument");
 		RPN::doRPN(argv[1]);
