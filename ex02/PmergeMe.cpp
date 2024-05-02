@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:37:25 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/05/01 14:10:22 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:41:21 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void PmergeMe::doMerge(int ac, char** av)
 		before.push_back(temp);
 	}
 	if (before.size() > 10000)
-		throw std::runtime_error("Max 10000 elements");
+		throw std::runtime_error("10000 elements max.");
 	
 	std::cout << "Before: " << std::endl;
 	printVecDebug(before);
@@ -115,7 +115,7 @@ void PmergeMe::doMerge(int ac, char** av)
 	double queTime = static_cast<double>(end - start) / (CLOCKS_PER_SEC / 1000);
 
 	comparionsQue = comparisonCount;
-	std::cout << "Finale que:" << std::endl;
+	std::cout << "Final que:" << std::endl;
 	printQueDebug(_resQue);
 
 
@@ -126,8 +126,8 @@ void PmergeMe::doMerge(int ac, char** av)
 	std::cout << std::endl;
 
 
-	std::cout << "Vec comparsons: " << comparionsVec << std::endl;
-	std::cout << "Que comparsons: " << comparionsQue << std::endl;
+	std::cout << "Vec comparisons: " << comparionsVec << std::endl;
+	std::cout << "Que comparisons: " << comparionsQue << std::endl;
 	checkVec(_resVec);
 	checkQue(_resQue);
 }

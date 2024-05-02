@@ -6,7 +6,7 @@
 /*   By: wvan-der <wvan-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:01:18 by wvan-der          #+#    #+#             */
-/*   Updated: 2024/05/02 13:38:06 by wvan-der         ###   ########.fr       */
+/*   Updated: 2024/05/02 13:56:03 by wvan-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,12 +182,12 @@ void RPN::checkInput(std::string input)
 		if (i % 2 == 0)
 		{
 			if (!validChar(input[i]))
-				throw std::runtime_error("Invalid format. (\"1 1 +\")");
+				throw std::runtime_error("Invalid format. should be (\"1 1 +\")");
 		}
 		else
 		{
 			if (input[i] != ' ')
-				throw std::runtime_error("Invalid format. (\"1 1 +\")");
+				throw std::runtime_error("Invalid format. should be (\"1 1 +\")");
 		}
 	}
 }
