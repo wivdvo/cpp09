@@ -61,6 +61,8 @@ void RPN::doRPN(std::string input)
 				div();
 		}
 	}
+	if (_stack.size() != 1)
+		throw std::runtime_error("Invalid input.");
 	std::cout << _stack.top() << std::endl;
 }
 
